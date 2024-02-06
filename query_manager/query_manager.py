@@ -21,9 +21,9 @@ class QueryManager:
         try:
             response = requests.get(search_string)
             search_results =  response.json()
-            self.verify_results(search_results)
+            self.__verify_results(search_results)
             
-            items = self.parse_results(search_results)
+            items = self.__parse_results(search_results)
 
             if not return_pages:
                 return items
@@ -45,7 +45,7 @@ class QueryManager:
             print("QUERY ERROR: Connection error")
             raise
 
-    def verify_results(self, search_results: dict):
+    def __verify_results(self, search_results: dict):
         if not 'items' in search_results:
             raise ValueError("QUERY ERROR: API result does not have items")
         
@@ -56,7 +56,7 @@ class QueryManager:
             if set(self.feature_mapping.keys()) not in set(search_results['items'][i].keys()):
                 raise ValueError("QUERY ERROR: Features missing in the response. Check feature_mapping.")
 
-    def parse_results(self, search_results):
+    def __parse_results(self, search_results):
         results = search_results['items'][:self.number_of_results]
         items = []
         for result in results:
