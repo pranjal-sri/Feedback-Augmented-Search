@@ -1,6 +1,6 @@
 import sys
 from query_manager import QueryManager
-# from ui_manager import UIManager
+from ui_manager import UIManager
 # from query_augmenter import QueryAugmenter
 import numpy
 
@@ -15,31 +15,28 @@ DEFAULT_QUERY_MANAGER_CONFIG ={'number_of_results':10,
 
 def run(api_key, engine_id, target_precision, INITIAL_QUERY):
     qm = QueryManager(api_key, engine_id, **DEFAULT_QUERY_MANAGER_CONFIG)
-    # um = UIManager()
+    um = UIManager(api_key, engine_id, target_precision)
     # qa = QueryAugmenter()
 
     current_query = INITIAL_QUERY
-    current_results = qm.query(current_query)
-    # um.display(results)
-    # current_feedback = um.get_user_feedback() <An array of 1 and 0>
-    current_feedback = None #Replace with line above
+    um.display_initial(current_query)
+    current_results = qm.query(current_query) # need a dictionary of results with at least 3 keys
+    current_feedback = um.display_and_input_feedback(current_results)
     current_precision = __calculate_precision(current_feedback)
 
     while(current_precision < target_precision): 
         # updated_query = qa.augment_query(current_query, current_results, current_feedback)
         updated_query = None #Replace with line above
-
+        um.display_initial(updated_query)
         updated_results =  qm.query(updated_query)
-        # um.display(updated_results)  
-        # updated_feedback = um.get_user_feedback() 
-        updated_feedback = None #Replace with line above
-
+        updated_feedback = um.display_and_input_feedback(updated_results)
         current_precision = __calculate_precision(updated_feedback)
+
         current_query = updated_query
         current_feedback = updated_feedback
         current_results = updated_results
 
-    # um.end_display()
+    # um.display_feedback_summary()
 
 def __calculate_precision(feedback):
     numpy.mean(feedback)
