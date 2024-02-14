@@ -21,12 +21,12 @@ class UIManager:
         user_feedback = []
 
         for index, result in enumerate(results_dictionary, 1):
-            print(f"Result {index}")
+            print(f"\nResult {index}")
             print("[")
-            print(f"URL: {result['Link']}")
+            print(f"URL: {result['URL']}")
             print(f"Title: {result['Title']}")
-            print(f"Summary: {result['Snippet']}\n")
-            print("]")
+            print(f"Summary: {result['Summary']}")
+            print("]\n")
 
             feedback = input("Relevant (Y/N)?").strip().upper()
             while feedback not in ['Y', 'N']:
@@ -61,13 +61,13 @@ if __name__ == '__main__':
     api_key = os.environ.get('GOOGLE_API_KEY')
     engine_id = os.environ.get('SEARCH_ENGINE_ID')
 
-    ui = UIManager(api_key, engine_id, 1)
+    # ui = UIManager(api_key, engine_id, 1)
 
-    results = []
-    with open('text_saving/cases.json') as user_file:
-        for line in user_file:
-            results.append(json.loads(line))
+    # results = []
+    # with open('text_saving/cases.json') as user_file:
+    #     for line in user_file:
+    #         results.append(json.loads(line))
 
-    feedback = ui.display_and_input_feedback(results)
+    # feedback = ui.display_and_input_feedback(results)
 
-    print(feedback)
+    # print(feedback)

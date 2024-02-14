@@ -1,0 +1,518 @@
+(adv_db) shreyaschatterjee@Shreyass-MacBook-Pro-3 Feedback-Augmented-Search % python3 feedback_augmented_search.py AIzaSyBdyvstyytiLSY0jPXM1FV9JfGmDaoZ3iY 91edb5a90f6c44a6a 1 "per se"
+
+Parameters:
+Client key  = AIzaSyBdyvstyytiLSY0jPXM1FV9JfGmDaoZ3iY
+Engine key  = 91edb5a90f6c44a6a
+Query       = per se
+Precision   = 1.0
+
+Google Search Results:
+======================
+Result 1
+[
+URL: https://www.thomaskeller.com/perseny
+Title: Per Se | Thomas Keller Restaurant Group
+Summary: Per Se. Per Se Front Door. center. About. About; Restaurant · Team · Info & Directions · Gift Experiences · Reservations; Menus & Stories. Menus & Stories
+]
+
+Relevant (Y/N)?y
+Result 2
+[
+URL: https://www.merriam-webster.com/dictionary/perse
+Title: Perse Definition & Meaning - Merriam-Webster
+Summary: The meaning of PERSE is of a dark grayish blue resembling indigo. How to use perse in a sentence. Did you know?
+]
+
+Relevant (Y/N)?n
+Result 3
+[
+URL: https://www.exploretock.com/perse
+Title: Per Se - New York, NY | Tock
+Summary: Opened in 2004, Per Se is Thomas Keller's acclaimed interpretation of The French Laundry in the Deutsche Bank Center at Columbus Circle.
+]
+
+Relevant (Y/N)?y
+Result 4
+[
+URL: https://www.instagram.com/perseny/
+Title: Per Se (@perseny) • Instagram photos and videos
+Summary: 268K Followers, 197 Following, 929 Posts - See Instagram photos and videos from Per Se (@perseny)
+]
+
+Relevant (Y/N)?n
+Result 5
+[
+URL: https://guide.michelin.com/us/en/new-york-state/new-york/restaurant/per-se
+Title: Per Se – New York - a MICHELIN Guide Restaurant
+Summary: Per Se – a Three Stars: Exceptional cuisine restaurant in the 2023 MICHELIN Guide USA. The MICHELIN inspectors' point of view, information on prices, ...
+]
+
+Relevant (Y/N)?y
+Result 6
+[
+URL: https://en.wikipedia.org/wiki/wikt:per_se
+Title: per se - Wiktionary, the free dictionary
+Summary: From Latin per sē (“by itself”), from per (“by, through”) and sē (“itself, himself, herself, themselves”).
+]
+
+Relevant (Y/N)?n
+Result 7
+[
+URL: https://dictionary.cambridge.org/us/dictionary/english/per-se
+Title: PER SE | definition in the Cambridge English Dictionary
+Summary: PER SE meaning: 1. by or of itself: 2. by or of itself: 3. by or of itself: . Learn more.
+]
+
+Relevant (Y/N)?n
+Result 8
+[
+URL: https://www.jamesperse.com/
+Title: James Perse Los Angeles
+Summary: James Perse. Women. Women; Apparel. Apparel Main Menu; New Arrivals · At Home Essentials · Classics · Dresses/Jumpsuits · Sweaters/Cashmere · T-shirts.
+]
+
+Relevant (Y/N)?n
+Result 9
+[
+URL: https://dictionary.cambridge.org/dictionary/english/per-se
+Title: PER SE | English meaning - Cambridge Dictionary
+Summary: 7 days ago ... PER SE definition: 1. by or of itself: 2. by or of itself: 3. by or of itself: . Learn more.
+]
+
+Relevant (Y/N)?n
+Result 10
+[
+URL: https://www.law.cornell.edu/wex/per_se
+Title: per se | Wex | US Law | LII / Legal Information Institute
+Summary: Primary tabs. Latin for “by itself,” in other words, inherently. For example, in tort law, a statutory violation is negligence per se. One of the elements a ...
+]
+
+Relevant (Y/N)?n
+
+======================
+FEEDBACK SUMMARY
+Query per se
+Precision 0.3
+Still below the desired precision of 1.0
+Indexing results ....
+Indexing results ....
+Augmenting by  restaurant york
+
+Parameters:
+Client key  = AIzaSyBdyvstyytiLSY0jPXM1FV9JfGmDaoZ3iY
+Engine key  = 91edb5a90f6c44a6a
+Query       = per se restaurant york
+Precision   = 1.0
+
+Google Search Results:
+======================
+Result 1
+[
+URL: https://www.thomaskeller.com/perseny
+Title: Per Se | Thomas Keller Restaurant Group
+Summary: Per Se Front Door. center. About. About; Restaurant · Team · Info & Directions · Gift ... New York; Per Se; Las Vegas; Bouchon Bistro · Bouchon Bakery; Surfside
+]
+
+Relevant (Y/N)?y
+Result 2
+[
+URL: https://www.exploretock.com/perse
+Title: Per Se - New York, NY | Tock
+Summary: Opened in 2004, Per Se is Thomas Keller's acclaimed interpretation of The ... restaurant is Chef Keller's second three-Michelin-starred property featuring ...
+]
+
+Relevant (Y/N)?y
+Result 3
+[
+URL: https://www.thomaskeller.com/new-york-new-york/per-se/restaurant
+Title: Opened in 2004, Per Se is Thomas Keller's acclaimed New York ...
+Summary: Restaurant Opened in 2004, Per Se is Thomas Keller's acclaimed New York interpretation of The French Laundry in the Deutsche Bank Center at Columbus Circle.
+]
+
+Relevant (Y/N)?y
+Result 4
+[
+URL: https://www.instagram.com/perseny/
+Title: Per Se (@perseny) • Instagram photos and videos
+Summary: Chef Thomas Keller's 3-Star Michelin restaurant overlooking Columbus Circle & Central Park located in New York City. 10 Columbus Cir, Fl 4th, New York, ...
+]
+
+Relevant (Y/N)?y
+Result 5
+[
+URL: https://guide.michelin.com/us/en/new-york-state/new-york/restaurant/per-se
+Title: Per Se – New York - a MICHELIN Guide Restaurant
+Summary: Per Se – a Three Stars: Exceptional cuisine restaurant in the 2023 MICHELIN Guide USA. The MICHELIN inspectors' point of view, information on prices, ...
+]
+
+Relevant (Y/N)?y
+Result 6
+[
+URL: https://en.wikipedia.org/wiki/Per_Se_(restaurant)
+Title: Per Se (restaurant) - Wikipedia
+Summary: Per Se is a New American and French restaurant located at The Shops at Columbus Circle, on the fourth floor of the Deutsche Bank Center at 10 Columbus ...
+]
+
+Relevant (Y/N)?y
+Result 7
+[
+URL: https://www.yelp.com/biz/per-se-new-york
+Title: PER SE - 7619 Photos & 1890 Reviews - 10 Columbus Cir, New ...
+Summary: ... York, NY · Restaurants · French. Per Se. Per Se ... restaurant for a reason. We had an unforgettable romantic dinner for two with impeccable service, unmatched…
+]
+
+Relevant (Y/N)?y
+Result 8
+[
+URL: https://www.tripadvisor.com/Restaurant_Review-g60763-d425628-Reviews-Per_Se-New_York_City_New_York.html
+Title: PER SE, New York City - Hell's Kitchen - Menu, Prices & Restaurant ...
+Summary: MICHELIN Guide's Point of View. An experience at Thomas Keller's Per Se is one to be savored, recounted and remembered. Despite stellar views and a clever ...
+]
+
+Relevant (Y/N)?y
+Result 9
+[
+URL: https://www.nytimes.com/2016/01/13/dining/pete-wells-per-se-review.html
+Title: At Thomas Keller's Per Se, Slips and Stumbles - The New York Times
+Summary: Jan 12, 2016 ... ... Per Se is among the worst food deals in New York. Mr. Keller was a ... York Times's restaurant critic, reviews new and notable restaurants in New ...
+]
+
+Relevant (Y/N)?y
+Result 10
+[
+URL: https://rahul.matthan.com/https-rahul-matthan-com-per-se-582b9ae6ce19
+Title: Per Se. The Remains of a Good Restaurant | by Rahul Matthan ...
+Summary: Oct 11, 2016 ... I had one night in New York and I wanted to get a great meal under my belly. My first choice was Eleven Madison Park, the highest rated ...
+]
+
+Relevant (Y/N)?y
+
+======================
+FEEDBACK SUMMARY
+Query per se restaurant york
+Precision 1.0
+Desired precision reached, done.
+(adv_db) shreyaschatterjee@Shreyass-MacBook-Pro-3 Feedback-Augmented-Search % python3 feedback_augmented_search.py AIzaSyBdyvstyytiLSY0jPXM1FV9JfGmDaoZ3iY 91edb5a90f6c44a6a 1 "cases" 
+
+Parameters:
+Client key  = AIzaSyBdyvstyytiLSY0jPXM1FV9JfGmDaoZ3iY
+Engine key  = 91edb5a90f6c44a6a
+Query       = cases
+Precision   = 1.0
+
+Google Search Results:
+======================
+
+Result 1
+[
+URL: https://www.cases.org/
+Title: CASES: Home
+Summary: From court and program offices in the Bronx, Brooklyn, and Manhattan, CASES provides community-based alternatives to jail and prison. These programs address ...
+]
+
+Relevant (Y/N)?n
+
+Result 2
+[
+URL: https://www.icc-cpi.int/cases
+Title: cases | International Criminal Court
+Summary: Banda. At large. Case also involved Saleh Mohammed Jerbo Jamus but proceedings against him were terminated on 4 October 2013 following his passing. On 7 March ...
+]
+
+Relevant (Y/N)?n
+
+Result 3
+[
+URL: https://www.oyez.org/cases
+Title: 2023-2024 Term | Oyez
+Summary: US Supreme Court cases from the 2023-2024 term.
+]
+
+Relevant (Y/N)?n
+
+Result 4
+[
+URL: https://www.casetify.com/
+Title: CASETiFY: Show Your Colors
+Summary: CASETiFY - We make the most sustainable yet protective phone cases for iPhone 15 / iPhone 15 Pro / iPhone 15 Plus / iPhone 15 Pro Max and tech accessories.
+]
+
+Relevant (Y/N)?n
+
+Result 5
+[
+URL: https://www.worldometers.info/coronavirus/
+Title: COVID - Coronavirus Statistics - Worldometer
+Summary: Daily and weekly updated statistics tracking the number of COVID-19 cases, recovered, and deaths. Historical data with cumulative charts, graphs, ...
+]
+
+Relevant (Y/N)?y
+
+Result 6
+[
+URL: https://acis.eoir.justice.gov/
+Title: Automated Case Information
+Summary: EOIR Automated Case Information ... Please check https://www.justice.gov/eoir-operational-status for up to date closures. ... Welcome to the Automated Case ...
+]
+
+Relevant (Y/N)?n
+
+Result 7
+[
+URL: https://www.cdc.gov/measles/cases-outbreaks.html
+Title: Measles Cases and Outbreaks | CDC
+Summary: Measles cases in 2019 · From January 1 to December 31, 2019, 1,274* individual cases of measles were confirmed in 31 states. · This is the greatest number of ...
+]
+
+Relevant (Y/N)?n
+
+Result 8
+[
+URL: https://www.icj-cij.org/cases
+Title: Cases | INTERNATIONAL COURT OF JUSTICE
+Summary: Main navigation ... The Court has a twofold role: to settle, in accordance with international law, legal disputes submitted to it by States (contentious cases) ...
+]
+
+Relevant (Y/N)?n
+
+Result 9
+[
+URL: https://pacer.uscourts.gov/
+Title: Public Access to Court Electronic Records | PACER: Federal Court ...
+Summary: Search for a case in the federal court where the case was filed, or; Search a nationwide index of federal court cases. The PACER Service Center can assist you ...
+]
+
+Relevant (Y/N)?n
+
+Result 10
+[
+URL: https://casesearch.courts.state.md.us/
+Title: Maryland Judiciary Case Search
+Summary: Confidential records and information will not be returned in your search results. The information displayed on this Web Site is generated from computerized ...
+]
+
+Relevant (Y/N)?n
+
+======================
+FEEDBACK SUMMARY
+Query cases
+Precision 0.1
+Still below the desired precision of 1.0
+Indexing results ....
+Indexing results ....
+Augmenting by  tracking charts
+
+Parameters:
+Client key  = AIzaSyBdyvstyytiLSY0jPXM1FV9JfGmDaoZ3iY
+Engine key  = 91edb5a90f6c44a6a
+Query       = cases tracking charts
+Precision   = 1.0
+
+Google Search Results:
+======================
+
+Result 1
+[
+URL: https://coronavirus.jhu.edu/map.html
+Title: COVID-19 Map - Johns Hopkins Coronavirus Resource Center
+Summary: Coronavirus COVID-19 Global Cases by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University (JHU)
+]
+
+Relevant (Y/N)?y
+
+Result 2
+[
+URL: https://covid.cdc.gov/
+Title: CDC COVID Data Tracker: Home
+Summary: Maps, charts, and data provided by CDC, updates Mondays ... This webpage presents data on COVID-19 cases with information on pregnancy status reported to CDC.
+]
+
+Relevant (Y/N)?
+Invalid input. Please enter 'Y' or 'N'.
+Relevant (Y/N)?y
+
+Result 3
+[
+URL: https://www.nytimes.com/interactive/2021/us/covid-cases.html
+Title: Covid in the U.S.: Latest Maps, Case and Death Counts - The New ...
+Summary: ... tracking pages. Hot spots. Average daily cases per 100,000 people in past week. 10 ... How cases, hospitalizations and deaths are trending. Each chart shows how ...
+]
+
+Relevant (Y/N)?y
+
+Result 4
+[
+URL: https://www.npr.org/sections/health-shots/2020/09/01/816707182/map-tracking-the-spread-of-the-coronavirus-in-the-u-s
+Title: Coronavirus update: View charts of U.S. cases and deaths : Shots ...
+Summary: Mar 16, 2020 ... Tracking the coronavirus around the U.S.: See how your state is doing. Updated February 1, 202311:48 AM ET Originally published March 16 ...
+]
+
+Relevant (Y/N)?y
+
+Result 5
+[
+URL: https://www.cdc.gov/fungal/candida-auris/tracking-c-auris.html
+Title: Tracking Candida auris | Candida auris | Fungal Diseases | CDC
+Summary: Fact SheetsFact Sheet For Patients about Testing. Pruebas de detección de la ... Tracking cases through NNDSS. C. auris was made nationally notifiable in 2018 ...
+]
+
+Relevant (Y/N)?n
+
+Result 6
+[
+URL: https://learn.microsoft.com/en-us/azure/devops/test/track-test-status?view=azure-devops
+Title: View progress report - Azure Test Plans | Microsoft Learn
+Summary: Jan 10, 2024 ... Track test case status. Use test case charts to find out the progress of your test case authoring. The charts for test cases give you the ...
+]
+
+Relevant (Y/N)?n
+
+Result 7
+[
+URL: https://www.cdc.gov/poxvirus/mpox/response/2022/us-map.html
+Title: 2022 U.S. Map & Case Count | Mpox | Poxvirus | CDC
+Summary: View a map of 2022 mpox cases in the United States.
+]
+
+Relevant (Y/N)?n
+
+Result 8
+[
+URL: https://www.washingtonpost.com/graphics/2020/national/coronavirus-us-cases-deaths/
+Title: Tracking U.S. covid-19 cases, deaths and hospitalizations by state ...
+Summary: The data in these charts is gathered by The Washington Post from the Centers for Disease Control and Prevention and state government sites (cases and deaths) ...
+]
+
+Relevant (Y/N)?y
+
+Result 9
+[
+URL: https://forum.asana.com/t/tracking-client-project-conversion-rate/164242
+Title: Tracking Client Project Conversion Rate - Use Cases - Asana Forum
+Summary: May 9, 2022 ... I've added a custom field to track whether client converted (Yes,No options) and have tried to build a custom chart in my reporting dashboard - ...
+]
+
+Relevant (Y/N)?n
+
+Result 10
+[
+URL: https://www.worldometers.info/coronavirus/
+Title: COVID - Coronavirus Statistics - Worldometer
+Summary: Daily and weekly updated statistics tracking the number of COVID-19 cases, recovered, and deaths. Historical data with cumulative charts, graphs, ...
+]
+
+Relevant (Y/N)?y
+
+======================
+FEEDBACK SUMMARY
+Query cases tracking charts
+Precision 0.6
+Still below the desired precision of 1.0
+Indexing results ....
+Indexing results ....
+Augmenting by  covid deaths
+
+Parameters:
+Client key  = AIzaSyBdyvstyytiLSY0jPXM1FV9JfGmDaoZ3iY
+Engine key  = 91edb5a90f6c44a6a
+Query       = cases tracking charts covid deaths
+Precision   = 1.0
+
+Google Search Results:
+======================
+
+Result 1
+[
+URL: https://www.worldometers.info/coronavirus/
+Title: COVID - Coronavirus Statistics - Worldometer
+Summary: Daily and weekly updated statistics tracking the number of COVID-19 cases, recovered, and deaths. Historical data with cumulative charts, graphs, ...
+]
+
+Relevant (Y/N)?y
+
+Result 2
+[
+URL: https://covid.cdc.gov/
+Title: CDC COVID Data Tracker: Home
+Summary: CDC's home for COVID-19 data. Visualizations, graphs, and data in one easy-to-use website.
+]
+
+Relevant (Y/N)?y
+
+Result 3
+[
+URL: https://www.nytimes.com/interactive/2021/us/covid-cases.html
+Title: Covid in the U.S.: Latest Maps, Case and Death Counts - The New ...
+Summary: Track Covid-19 in your area, and get the latest state and county data on cases, deaths, hospitalizations, tests and vaccinations.
+]
+
+Relevant (Y/N)?y
+
+Result 4
+[
+URL: https://coronavirus.jhu.edu/map.html
+Title: COVID-19 Map - Johns Hopkins Coronavirus Resource Center
+Summary: JHU CSSE COVID ; Total Cases. 676,609,955 ; Total Deaths. 6,881,955 ; Total Doses Administered. 13,338,833,198.
+]
+
+Relevant (Y/N)?y
+
+Result 5
+[
+URL: https://www.washingtonpost.com/graphics/2020/national/coronavirus-us-cases-deaths/
+Title: Tracking U.S. covid-19 cases, deaths and hospitalizations by state ...
+Summary: The data in these charts is gathered by The Washington Post from the Centers for Disease Control and Prevention and state government sites (cases and deaths) ...
+]
+
+Relevant (Y/N)?y
+
+Result 6
+[
+URL: https://coronavirus.jhu.edu/data
+Title: Tracking - Johns Hopkins Coronavirus Resource Center
+Summary: Review 7-day trends in hospitalizations of COVID patients. State Timeline. Timeline of COVID-19 policies, cases, and deaths in your state ... Chart New Confirmed ...
+]
+
+Relevant (Y/N)?y
+
+Result 7
+[
+URL: https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/
+Title: US COVID-19 cases and deaths by state | USAFacts
+Summary: Jul 23, 2023 ... The underlying data is available for download below the US county map and has helped government agencies like Centers for Disease Control and ...
+]
+
+Relevant (Y/N)?y
+
+Result 8
+[
+URL: https://www.npr.org/sections/health-shots/2020/09/01/816707182/map-tracking-the-spread-of-the-coronavirus-in-the-u-s
+Title: Coronavirus update: View charts of U.S. cases and deaths : Shots ...
+Summary: Mar 16, 2020 ... Tracking the coronavirus around the U.S.: See how your state is doing. Updated February 1, 202311:48 AM ET ...
+]
+
+Relevant (Y/N)?y
+
+Result 9
+[
+URL: https://covid19.who.int/
+Title: WHO COVID-19 dashboard: COVID-19 cases
+Summary: The latest data for coronavirus (COVID-19) cases from the WHO COVID-19 dashboard.
+]
+
+Relevant (Y/N)?y
+
+Result 10
+[
+URL: https://ourworldindata.org/covid-cases
+Title: Coronavirus (COVID-19) Cases - Our World in Data
+Summary: The previous charts looked at the number of confirmed cases per day – this chart ... case or death is defined by meeting confirmatory laboratory evidence for ...
+]
+
+Relevant (Y/N)?y
+
+======================
+FEEDBACK SUMMARY
+Query cases tracking charts covid deaths
+Precision 1.0
+Desired precision reached, done.
