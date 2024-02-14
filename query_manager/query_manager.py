@@ -54,7 +54,7 @@ class QueryManager:
             raise ValueError("QUERY ERROR: Too few results")
         
         for i in range(self.number_of_results):
-            if set(self.feature_mapping.keys()) not in set(search_results['items'][i].keys()):
+            if not set(self.feature_mapping.keys()).issubset(set(search_results['items'][i].keys())):
                 raise ValueError("QUERY ERROR: Features missing in the response. Check feature_mapping.")
 
     def __parse_results(self, search_results):
@@ -76,9 +76,9 @@ if __name__ == '__main__':
     
     api_key = os.environ.get('GOOGLE_API_KEY')
     engine_id = os.environ.get('SEARCH_ENGINE_ID')
-    qm = QueryManager(api_key,engine_id)
-    result = qm.query('per se')
+    # qm = QueryManager(api_key,engine_id)
+    # result = qm.query('per se')
     
 
-    with open('per_se.json', 'w') as file:
-        json.dump(result, file)
+    # with open('per_se.json', 'w') as file:
+    #     json.dump(result, file)

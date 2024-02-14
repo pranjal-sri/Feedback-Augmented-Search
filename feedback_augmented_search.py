@@ -38,7 +38,7 @@ def run(api_key, engine_id, target_precision, INITIAL_QUERY):
     um.display_feedback_summary(current_query, current_precision, None)
 
 def __calculate_precision(feedback):
-    numpy.mean(feedback)
+    return numpy.mean(feedback)
 
 if __name__ == '__main__':
     API_KEY = sys.argv[1]

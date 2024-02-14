@@ -17,16 +17,16 @@ class QueryAugmenter:
         vocab = set()
         for result in result_list:
             title = result.get('Title', '')
-            snippet = result.get('Snippet', '')
+            snippet = result.get('Summary', '')
             title_words = re.findall(self.pattern, title.lower())
             title_words = [word.strip() for word in title_words if word.strip() not in self.stop_words]
             snippet_words = re.findall(self.pattern, snippet.lower())
             snippet_words = [word.strip() for word in snippet_words if word.strip() not in self.stop_words]
             vocab.update(title_words + snippet_words)
-            word_lists.append({'title': title_words, 'snippet': snippet_words})
+            word_lists.append({'title': title_words, 'summary': snippet_words})
         return word_lists, vocab
     
-    def gini_impurity(self, word, docs_with_word, docs_without_word, feedback):
+    def gini_impurity(self, docs_with_word, docs_without_word, feedback):
         relevant_docs_with_word = 0
         relevant_docs_without_word = 0
         for doc in docs_with_word:
@@ -45,7 +45,7 @@ class QueryAugmenter:
         wl, vocab = self.extract_words(current_results)
         inverse_list = {word: set() for word in vocab}
         for i, document in enumerate(wl):
-            for word in document['title'] + document['snippet']:
+            for word in document['title'] + document['summary']:
                 inverse_list[word].add(i+1)
         all_documents = set(range(1, 10+1))
         percentage_of_relevant_docs = {}
@@ -58,7 +58,7 @@ class QueryAugmenter:
         words_to_search = [word for word in vocab if percentage_of_relevant_docs[word]>k]
         ranking = {}
         for word in words_to_search:
-            gini = self.gini_impurity(word, inverse_list[word], all_documents - inverse_list[word], feedback = {k+1:f for k, f in enumerate(current_feedback)})
+            gini = self.gini_impurity(inverse_list[word], all_documents - inverse_list[word], feedback = {k+1:f for k, f in enumerate(current_feedback)})
             w1 = len(inverse_list[word])/len(all_documents)
             w2 = 1.0 - w1
             ranking[word] = ( w1*gini[0] + w2*gini[1])
@@ -74,15 +74,15 @@ if __name__ == '__main__':
     
     api_key = os.environ.get('GOOGLE_API_KEY')
     engine_id = os.environ.get('SEARCH_ENGINE_ID')
-    qa = QueryAugmenter()
+    # qa = QueryAugmenter()
 
-    results = []
-    with open('text_saving/cases.json') as user_file:
-        for line in user_file:
-            results.append(json.loads(line))
+    # results = []
+    # with open('text_saving/cases.json') as user_file:
+    #     for line in user_file:
+    #         results.append(json.loads(line))
 
-    feedback = [0, 0, 1, 0, 0, 0, 0, 0, 0, 1]
+    # feedback = [0, 0, 1, 0, 0, 0, 0, 0, 0, 1]
 
-    updated_query, update = qa.augment_query("cases", results, feedback)
+    # updated_query, update = qa.augment_query("cases", results, feedback)
 
-    print(updated_query)
+    # print(updated_query)
