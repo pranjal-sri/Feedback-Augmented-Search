@@ -1,4 +1,5 @@
 import requests
+import json
 
 class QueryManager:
     def __init__(self, API_KEY, engine_id, number_of_results = 10, feature_mapping = None):
@@ -76,4 +77,10 @@ if __name__ == '__main__':
     api_key = os.environ.get('GOOGLE_API_KEY')
     engine_id = os.environ.get('SEARCH_ENGINE_ID')
     qm = QueryManager(api_key,engine_id)
-    print(qm.query('per se'))
+    result = qm.query('per se')
+    
+
+    with open('per_se.json', 'w') as file:
+        json.dump(result, file)
+
+    print("Results written to 'result.json'")
