@@ -82,5 +82,3 @@ if __name__ == '__main__':
 
     with open('per_se.json', 'w') as file:
         json.dump(result, file)
-
-    print("Results written to 'result.json'")
