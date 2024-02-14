@@ -1,5 +1,6 @@
 import requests
 from typing import List
+import json
 
 class UIManager:
     def __init__(self, API_KEY, engine_id, target_precision):
@@ -22,9 +23,9 @@ class UIManager:
         for index, result in enumerate(results_dictionary, 1):
             print(f"Result {index}")
             print("[")
-            print(f"URL: {result['URL']}")
+            print(f"URL: {result['Link']}")
             print(f"Title: {result['Title']}")
-            print(f"Summary: {result['Summary']}\n")
+            print(f"Summary: {result['Snippet']}\n")
             print("]")
 
             feedback = input("Relevant (Y/N)?").strip().upper()
@@ -53,4 +54,20 @@ class UIManager:
             print(f"Augmenting by {update}")
 
 if __name__ == '__main__':
-    print("Somehow test this")
+    from dotenv import load_dotenv
+    import os
+    load_dotenv()
+    
+    api_key = os.environ.get('GOOGLE_API_KEY')
+    engine_id = os.environ.get('SEARCH_ENGINE_ID')
+
+    ui = UIManager(api_key, engine_id, 1)
+
+    results = []
+    with open('text_saving/cases.json') as user_file:
+        for line in user_file:
+            results.append(json.loads(line))
+
+    feedback = ui.display_and_input_feedback(results)
+
+    print(feedback)
