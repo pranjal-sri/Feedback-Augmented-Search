@@ -36,11 +36,21 @@ class UIManager:
 
         return user_feedback
 
-    def display_feedback_summary(self):
+    def display_feedback_summary(self, current_query, current_precision, update):
         print("\n======================")
         print("FEEDBACK SUMMARY")
-        # think about this
+        print(f"Query {current_query}")
+        print(f"Precision {current_precision}")
+        if update == None:
+            if current_precision >= self.target_precision:
+                print("Desired precision reached, done.")
+            else:
+                print("No update possible, desired result cannot be found.")
+        else:
+            print(f"Still below the desired precision of {self.target_precision}")
+            print("Indexing results ....")
+            print("Indexing results ....")
+            print(f"Augmenting by {update}")
 
 if __name__ == '__main__':
-    # complete this
     print("Somehow test this")
