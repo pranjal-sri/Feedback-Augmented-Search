@@ -77,8 +77,8 @@ if __name__ == '__main__':
     api_key = os.environ.get('GOOGLE_API_KEY')
     engine_id = os.environ.get('SEARCH_ENGINE_ID')
     # qm = QueryManager(api_key,engine_id)
-    # result = qm.query('per se')
+    # result = qm.query('lionel')
     
 
-    # with open('per_se.json', 'w') as file:
+    # with open('text_saving/lionel.json', 'w') as file:
     #     json.dump(result, file)
