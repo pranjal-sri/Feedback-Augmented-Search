@@ -1,5 +1,3 @@
-import requests
-import json
 import regex as re
 
 class QueryAugmenter:
