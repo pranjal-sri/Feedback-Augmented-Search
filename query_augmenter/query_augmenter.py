@@ -1,4 +1,5 @@
 import regex as re
+from math import log
 
 class QueryAugmenter:
     def __init__(self):
@@ -9,43 +10,138 @@ class QueryAugmenter:
         with open('stop_words.txt', 'r') as stop_words_file:
             for line in stop_words_file:
                 self.stop_words.add(line.strip())
+        self.window_size = 2
+        self.k = 0.6
+        self.frequency_weight = 1.0
+        self.proximity_weight = 1.0
     
-    def extract_words(self, result_list):
-        word_lists = []
+    def extract_words(self, result_list, query_terms):
+        documents = []
         vocab = set()
         for result in result_list:
             title = result.get('Title', '')
             snippet = result.get('Summary', '')
             title_words = re.findall(self.pattern, title.lower())
-            title_words = [word.strip() for word in title_words if word.strip() not in self.stop_words]
+            title_words = [word.strip() for word in title_words if (word.strip() not in self.stop_words) 
+                                                                        or (word.strip() in query_terms)]
             snippet_words = re.findall(self.pattern, snippet.lower())
-            snippet_words = [word.strip() for word in snippet_words if word.strip() not in self.stop_words]
+            snippet_words = [word.strip() for word in snippet_words if (word.strip() not in self.stop_words) 
+                                                                    or (word.strip() in query_terms)]
+            
             vocab.update(title_words + snippet_words)
-            word_lists.append({'title': title_words, 'summary': snippet_words})
-        return word_lists, vocab
+            documents.append({'title': title_words, 'summary': snippet_words})
+        return documents, vocab
     
-    def gini_impurity(self, docs_with_word, docs_without_word, feedback):
-        relevant_docs_with_word = 0
-        relevant_docs_without_word = 0
-        for doc in docs_with_word:
-            relevant_docs_with_word += feedback[doc]
-        for doc in docs_without_word:
-            relevant_docs_without_word += feedback[doc]
-        prob_relevant_with_word = relevant_docs_with_word/len(docs_with_word)
-        prob_irrelevant_with_word = 1 - prob_relevant_with_word
-        prob_relevant_without_word = relevant_docs_without_word/len(docs_without_word)
-        prob_irrelevant_without_word = 1 - prob_relevant_without_word
-        impurity_with_word = 1 - (prob_relevant_with_word**2 + prob_irrelevant_with_word**2)
-        impurity_without_word = 1 - (prob_relevant_without_word**2 + prob_irrelevant_without_word**2)
-        return impurity_with_word, impurity_without_word
+    @staticmethod
+    def gini(n_relevant_docs, n_irrelevant_docs):
+        eps = 1e-7
+        p_relevance = n_relevant_docs/(n_irrelevant_docs+n_relevant_docs+eps)
+        p_irrelevance = n_irrelevant_docs/(n_irrelevant_docs+n_relevant_docs+eps)
+        return 1 - p_irrelevance**2 - p_relevance**2
     
+    def is_query_term_in_window(self, words, index, query_terms):
+        for i in range(index - self.window_size, index+self.window_size+1):
+            if i < 0 or i>len(words) or i == index: 
+                continue
+            if words[i] in query_terms: 
+                return True
+        
+        return False
+
+    def construct_inverse_list(self, documents, vocab, query_terms ):
+        inverse_list = {word:{} for word in vocab}
+        for doc_i, document in enumerate(documents):
+            doc_words = document['title'] + ['\\']*self.window_size + document['summary']
+            
+            for word_i, word in enumerate(doc_words):
+                if word == '\\': 
+                    continue
+
+                word_dict = inverse_list[word]
+                if doc_i not in inverse_list[word]:
+                    word_dict[doc_i] = {'frequency': 0, 'close_to_query': False}
+                
+                word_dict[doc_i]['frequency'] = word_dict[doc_i]['frequency']+1
+                word_dict[doc_i]['close_to_query'] = self.is_query_term_in_window(doc_words, word_i, query_terms)
+        
+        return inverse_list
+                
+    def gini_gain(self, word, inverse_list, feedback):
+        docs_with_word = list(inverse_list[word])
+
+        all_documents = set(range(0, len(feedback)))
+        relevant_docs = set([i for i in range(len(feedback)) if feedback[i] == 1])
+
+        docs_with_word = set(inverse_list[word].keys())
+        docs_without_word = all_documents - docs_with_word
+
+        n_relevant_with_word = len(docs_with_word.intersection(relevant_docs))
+        n_irrelevant_with_word = len(docs_with_word)- n_relevant_with_word
+
+        n_relevant_without_word = len(docs_without_word.intersection(relevant_docs))
+        n_irrelevant_without_word = len(docs_without_word) - n_relevant_without_word
+
+        w1 = len(docs_with_word)/len(all_documents)
+        w2 = 1.0 - w1
+
+        base_gini = self.gini(len(relevant_docs), len(all_documents - relevant_docs))
+        word_gini = w1*self.gini(n_relevant_with_word, n_irrelevant_with_word) \
+                    + w2*self.gini(n_relevant_without_word, n_irrelevant_without_word)
+
+        gini_gain = base_gini-word_gini
+        return gini_gain
+    
+    def get_words_to_search(self, feedback, vocab, query_terms, inverse_list):
+        words_to_search = []
+        relevant_docs = set([i for i in range(len(feedback)) if feedback[i] == 1])
+
+        for word in vocab:
+            if word in query_terms:
+                continue
+            word_docs = set(inverse_list[word].keys())
+            if len(word_docs.intersection(relevant_docs))/len(word_docs) >= self.k:
+                words_to_search.append(word)
+        
+        return words_to_search
+    
+    def get_gini_rankings(self, words_to_search, inverse_list, feedback):
+        rankings = {}
+        for word in words_to_search:
+            rankings[word] = self.gini_gain(word, inverse_list, feedback)
+        
+        return rankings
+    
+    def weigh_ranking_by_frequency(self, rankings, inverse_list, feedback):
+        relevant_docs = set([i for i in range(len(feedback)) if feedback[i] == 1])
+        for word in rankings.keys():
+            word_docs = set(inverse_list[word].keys())
+            relevant_word_docs = word_docs.intersection(relevant_docs)
+            total_relevant_freq = 0
+            for doc in relevant_word_docs:
+                total_relevant_freq += inverse_list[word][doc]['frequency']
+            
+
+            rankings[word]+= log(1.0 + total_relevant_freq)
+
+    def weigh_ranking_by_proximity(self, rankings, inverse_list, feedback):
+        relevant_docs = set([i for i in range(len(feedback)) if feedback[i] == 1])
+        for word in rankings.keys():
+            word_docs = set(inverse_list[word].keys())
+            relevant_word_docs = word_docs.intersection(relevant_docs)
+            total_close_to_query_occurences = 0
+            for doc in relevant_word_docs:
+                if inverse_list[word][doc]['close_to_query']:
+                    total_close_to_query_occurences+=1
+            
+            rankings[word] += log(1.0+total_close_to_query_occurences)
+
     def augment_query(self, current_query, current_results, current_feedback):
-        wl, vocab = self.extract_words(current_results)
+        documents, vocab = self.extract_words(current_results)
         inverse_list = {word: set() for word in vocab}
-        for i, document in enumerate(wl):
+        for i, document in enumerate(documents):
             for word in document['title'] + document['summary']:
                 inverse_list[word].add(i+1)
-        all_documents = set(range(1, 10+1))
+        all_documents = set(range(1, len(documents)+1))
         percentage_of_relevant_docs = {}
         for word, docs in inverse_list.items():
             number_of_relevant_docs = 0
@@ -64,6 +160,7 @@ class QueryAugmenter:
         update = ' ' + res[0] + ' ' + res[1]
         updated_query = current_query + update
         return updated_query, update
+    
 
 if __name__ == '__main__':
     from dotenv import load_dotenv
