@@ -41,7 +41,7 @@ class QueryAugmenter:
     
     def is_query_term_in_window(self, words, index, query_terms):
         for i in range(index - self.window_size, index+self.window_size+1):
-            if i < 0 or i>len(words) or i == index: 
+            if i < 0 or i>=len(words) or i == index: 
                 continue
             if words[i] in query_terms: 
                 return True
@@ -136,27 +136,29 @@ class QueryAugmenter:
             rankings[word] += log(1.0+total_close_to_query_occurences)
 
     def augment_query(self, current_query, current_results, current_feedback):
-        documents, vocab = self.extract_words(current_results)
-        inverse_list = {word: set() for word in vocab}
-        for i, document in enumerate(documents):
-            for word in document['title'] + document['summary']:
-                inverse_list[word].add(i+1)
-        all_documents = set(range(1, len(documents)+1))
-        percentage_of_relevant_docs = {}
-        for word, docs in inverse_list.items():
-            number_of_relevant_docs = 0
-            for doc in docs:
-                number_of_relevant_docs += current_feedback[doc - 1]
-            percentage_of_relevant_docs[word] = number_of_relevant_docs/len(docs)
-        k = 0.6
-        words_to_search = [word for word in vocab if percentage_of_relevant_docs[word]>k]
-        ranking = {}
-        for word in words_to_search:
-            gini = self.gini_impurity(inverse_list[word], all_documents - inverse_list[word], feedback = {k+1:f for k, f in enumerate(current_feedback)})
-            w1 = len(inverse_list[word])/len(all_documents)
-            w2 = 1.0 - w1
-            ranking[word] = ( w1*gini[0] + w2*gini[1])
-        res = sorted(words_to_search, key= lambda x: ranking[x])
+        # import pdb; pdb.set_trace()
+        query_terms = current_query.strip().split()
+        documents, vocab = self.extract_words(current_results, query_terms)
+        inverse_list = self.construct_inverse_list(documents, vocab, query_terms)
+        # all_documents = set(range(1, len(documents)+1))
+        # percentage_of_relevant_docs = {}
+        # for word, docs in inverse_list.items():
+        #     number_of_relevant_docs = 0
+        #     for doc in docs:
+        #         number_of_relevant_docs += current_feedback[doc - 1]
+        #     percentage_of_relevant_docs[word] = number_of_relevant_docs/len(docs)
+        # k = 0.6
+        words_to_search = self.get_words_to_search(current_feedback, vocab, query_terms, inverse_list)
+        rankings = self.get_gini_rankings(words_to_search, inverse_list, current_feedback)
+        self.weigh_ranking_by_frequency(rankings, inverse_list, current_feedback)
+        self.weigh_ranking_by_proximity(rankings, inverse_list, current_feedback)
+        # for word in words_to_search:
+        #     gini = self.gini_impurity(inverse_list[word], all_documents - inverse_list[word], feedback = {k+1:f for k, f in enumerate(current_feedback)})
+        #     w1 = len(inverse_list[word])/len(all_documents)
+        #     w2 = 1.0 - w1
+        #     ranking[word] = ( w1*gini[0] + w2*gini[1])
+
+        res = sorted(words_to_search, key= lambda x: -rankings[x])
         update = ' ' + res[0] + ' ' + res[1]
         updated_query = current_query + update
         return updated_query, update
