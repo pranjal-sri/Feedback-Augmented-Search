@@ -11,6 +11,7 @@ class QueryManager:
         if feature_mapping is not None:
             self.feature_mapping = feature_mapping
         else: 
+            # which features to include from the result and what to map them to
             self.feature_mapping = {'link': 'URL',
                                     'title': 'Title',
                                     'snippet': 'Summary'}
@@ -32,16 +33,16 @@ class QueryManager:
         # chekcing for all other types of errors in case of using requests.get()
         except requests.exceptions.Timeout:
             print("QUERY ERROR: Timeout occured")
-            raise
+            sys.exit()
         except requests.exceptions.TooManyRedirects:
             print("QUERY ERROR: Too many redirects")
-            raise
+            sys.exit()
         except requests.exceptions.JSONDecodeError:
             print("QUERY ERROR: JSON response can't be parsed")
-            raise
+            sys.exit()
         except requests.exceptions.RequestException:
             print("QUERY ERROR: Connection error")
-            raise
+            sys.exit()
 
     def __verify_results(self, search_results: dict):
 
@@ -63,7 +64,7 @@ class QueryManager:
             # we decided to not specifically handle non html files since
             # most of application/pdf type files also contained the 3 things needed by us - link, title and snippet
             # we just check for the presence of those 3 keywords and then do the mapping
-            # this ensures that we select x out of first 10 results, where x is emperically observed to be == 10
+            # this ensures that we select x out of first 10 results
             if set(self.feature_mapping.keys()).issubset(set(result.keys())):
                 item = {mapping: result[feature] for feature, mapping in self.feature_mapping.items()}
                 items.append(item)
