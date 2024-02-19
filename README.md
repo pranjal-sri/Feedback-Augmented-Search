@@ -89,9 +89,7 @@ Here, close_to_query is True if a query term is encountered in a window parametr
 
 2. **Filtering words_to_search based on ratio of relevant documents**
 
- We get a list of words called words_to_search which are our candidates for being appended to the query. To filter them, we select all words such that the ratio of relevant documents in their inverse list is greater than some parameter k(=0.6 by default).
-
-$words\_to\_search = \{word\ |\ \frac{|documents\ \in\ inverse\_list[word]|}{No. of total\ documents} \geq k\}$
+We get a list of words called words_to_search which are our candidates for being appended to the query. To filter them, we select all words such that the ratio of relevant documents in their inverse list is greater than some parameter k(=0.6 by default).
 
 3. **Ranking words**
 
@@ -101,9 +99,9 @@ The ranking of words in the QueryAugmenter module involves a calculation of the 
 
 The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. This calculation is expressed as follows:
 
-$gini\_gain(word) = \textit{gini$\_$impurity(base results)} - \textit{gini$\_$impurity(word)} $
+*gini_gain(word) = gini_impurity(base results) - gini_impurity(results)*
 
-where gini of a set of documents is defined as: 
+Gini coefficient of a set of documents is defined as: 
 
 $gini = 1 - \frac{\text{No. of relevant docs}}{\text{No. of total docs}}^2 - \frac{\text{No. of irrelevant docs}}{\text{No. of total docs}}^2$
 
@@ -116,7 +114,7 @@ $gini = 1 - \frac{\text{No. of relevant docs}}{\text{No. of total docs}}^2 - \fr
 #### ii. Adding frequency weights
 For each word, we consider it's frequency in the relevant documents. We then update the rankings using the following formula:
 
-$ranking(word) = gini\_gain(word) + tf_{word}$ 
+$ranking(word)$ = gini_gain(word) + $tf_{word}$ 
 
 where $tf_{word} = log(1+freq_{word})$
 
@@ -130,7 +128,7 @@ We count the following dependency relation for a word:
 
 Let $d_{word}$ be the number of such dependency occurences. Then, the final ranking of a word is given as:
 
-$ranking(word) = gini\_gain(word) + tf_{word} + log(1+d_{word})$
+$ranking(word)$ = gini_gain(word) $+ tf_{word} + log(1+d_{word})$
 
 
 - #### iv. Selecting and ordering terms for the new query
