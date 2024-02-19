@@ -85,7 +85,7 @@ The project consists of the following main modules:
 
 ## QueryAugmenter: Methodology
 
-The QueryAugmenter module implements the logic for expanding queries based on user feedback. It uses a four step process to select words to augment to the query. It 1) constructs inverse lists for words 2) filter candidates for appending 3)Ranks candidates 4) Selects words to append and orders them to genrate a new query. These steps are explained below in detail.
+The QueryAugmenter module implements the logic for expanding queries based on user feedback. It uses a four step process to select words to augment to the query. It 1) constructs inverse lists for words 2) filters candidates for appending 3)ranks the candidates 4) selects top candidates to append to query and orders them to generate a new query. These steps are explained below in detail.
 
 #### 1. Construction of inverse-lists
 -  the `construct_inverse_list` method builds inverse lists for each word encountered in the search results. The inverse list is a list of all the documents the word is present in, formatted as follows:
@@ -115,9 +115,9 @@ Here, close_to_query is True if a query term is encountered in a window parametr
 #### 3. Ranking words
 We rank the candidate words based on a combination of their gini gain, their frequency in relevant docs, and syntactic dependencies on the query terms. These help us to capture discriminatory value, importance within the relevant documents, and relation with query terms respectively. The following explains the three and how they are combined:
 
-  **i. Gini Gain Calculation**
+  **i. Gini Gain**
 
-  The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. Within our application, gini of a set of documents is defined as: 
+  The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. Gini impurity is a widely used metric in the context of feature selection of Decision trees. Within our application, gini of a set of documents is defined as: 
   
   $gini = 1 - \left( \frac{\text{No. of relevant docs}}{\text{No. of total docs}}\right)^2 - \left( \frac{\text{No. of irrelevant docs}}{\text{No. of total docs}} \right)^2$
   
@@ -152,9 +152,9 @@ We rank the candidate words based on a combination of their gini gain, their fre
   $ranking(word)$ = *gini_gain(word)* $+ tf_{word} + log(1+d_{word})$
 
 
-**iv. Selecting and ordering terms for the new query**
+#### 4. Selecting and ordering terms for the new query**
 
-  Based on the rankings, we have *threshold_for_append* parameter in QueryAugmenter. If the difference in rankings of the top 2 candidates is less than this threshold, we append 2 terms to the query, otherwise we only append the top term to all the previous query terms.
+  Based on the rankings, we have  ```threshold_for_append``` parameter in QueryAugmenter. If the difference in rankings of the top 2 candidates is less than this threshold, we append 2 terms to the query, otherwise we only append the top term to all the previous query terms.
   
   Once we have the new query terms, we decide the best order of query by considering the permutation with **highest subsequence count** in the corpus of the response. For each order, we find the number of subsequences in the corpus that match with the order. The order with highest count is returned as the new order of terms. We use regex to find this, i.e., for a possible query order $(q_1, q_2, \ldots q_k)$, we search occurences of substrings of type: r" $.\*?\ q_1\ .\*?\ q_2 \ldots\ .\*?\ q_k\ .*?$ "
 
@@ -173,22 +173,27 @@ It verifies the results to ensure it has the item field and has atleast 10 searc
 It parses the results to prepare the output_dict. It includes and maps the fields as specified by feature_mapping. 
 **For non-HTML documents, we include them as long as they have a title, link and snippet field. Documents without these fields are excluded**
 
+## Additional Information: Implementation
+- Ensure your Google Custom Search Engine is configured to allow the specified API Key and Engine ID.
+- You can control the weightage of frequency term as well as the dependency term for ranking candidates by changing the parameters ```frequency_weight``` and ```dependency_weight```. This lets us alter the importance of frequency and dependencies in rankings. These parameters default to 1.0.
+- If the precision of the results of some query is 0.0, the program exits as it does not have any relevant documents that it can use to get a better query.
 
-**Google Custom Search Engine API Key and Engine ID:**
+  
+## Google Custom Search Engine API Key and Engine ID
 
 Pranjal Srivastava
-- **API Key:** [Your API Key]
-- **Engine ID:** [Your Engine ID]
+- **API Key:** AIzaSyDuSM_JnE7BUIaW54cgZLIcNgEwm79URsg
+- **Engine ID:** 3430a164067404160
 
 Shreyas Chatterjee
 - **API Key:** AIzaSyBdyvstyytiLSY0jPXM1FV9JfGmDaoZ3iY
 - **Engine ID:** 91edb5a90f6c44a6a
 
-**Additional Information:**
-- Ensure your Google Custom Search Engine is configured to allow the specified API Key and Engine ID.
-- Detailed information on handling non-HTML files: we decided to not specifically handle non html files since most of application/pdf type files also contained the 3 things needed by us - link, title and snippet and we wanted to use them too.
+
 
 **References:**
-- Project Idea : https://www.cs.columbia.edu/~gravano/cs6111/proj1.html
-- Gini Coefficient : https://en.wikipedia.org/wiki/Gini_coefficient
-- Spacy - https://realpython.com/natural-language-processing-spacy-python/
+- Project website: [Official page](https://www.cs.columbia.edu/~gravano/cs6111/proj1.html)
+- Gini Coefficient :\
+  [Gini Impurity in decision trees](https://en.wikipedia.org/wiki/Decision_tree_learning) \
+  [What is the Gini Coefficienct?](https://ourworldindata.org/what-is-the-gini-coefficient)
+- Spacy Dependency Parser : [documentation](https://spacy.io/api/dependencyparser)
