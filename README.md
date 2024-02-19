@@ -83,7 +83,7 @@ The project consists of the following main modules:
 - itertools.permutations: to check all the possible orderings of the words
 
 
-## Query Augmentation
+## QueryAugmenter: Methodology
 
 The QueryAugmenter module implements the logic for expanding queries based on user feedback. It uses a four step process to select words to augment to the query. It 1) constructs inverse lists for words 2) filter candidates for appending 3)Ranks candidates 4) Selects words to append and orders them to genrate a new query. These steps are explained below in detail.
 
@@ -158,6 +158,9 @@ We rank the candidate words based on a combination of their gini gain, their fre
   
   Once we have the new query terms, we decide the best order of query by considering the permutation with **highest subsequence count** in the corpus of the response. For each order, we find the number of subsequences in the corpus that match with the order. The order with highest count is returned as the new order of terms. We use regex to find this, i.e., for a possible query order $(q_1, q_2, \ldots q_k)$, we search occurences of substrings of type: r" $.\*?\ q_1\ .\*?\ q_2 \ldots\ .\*?\ q_k\ .*?$ "
 
+## QueryManager: Methodology
+
+QueryManager 
 **Google Custom Search Engine API Key and Engine ID:**
 
 Pranjal Srivastava
