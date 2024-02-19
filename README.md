@@ -10,12 +10,16 @@
   - **Columbia UNI:** sc5290
 
 **List of Files:**
-1. `main.py`
-2. `query_manager.py`
-3. `ui_manager.py`
-4. `query_augmenter.py`
-5. `README.md`
-6. (Any other relevant files)
+1. `feedback_augemented_search.py`
+2. `query_manager/query_manager.py`
+3. `query_manager/__init__.py`
+4. `ui_manager/ui_manager.py`
+5. `ui_manager/__init__.py`
+6. `query_augmenter/query_augmenter.py`
+7. `query_augmenter/__init__.py`
+8. `README.md`
+9. `requirements.txt`
+10. `stop_words.txt`
 
 ## Running the Program
 
@@ -23,6 +27,10 @@ To run the project, follow these steps:
 
 1. **Setting Up Environment:**
    - Ensure you have Python installed on your system.
+   - Make sure you run
+   ```bash
+   sudo apt update
+   sudo apt install python3-pip
 
 2. **Install Dependencies and spacy model:**
    Run the following command in your working directory.
@@ -35,7 +43,7 @@ To run the project, follow these steps:
     python3 feedback_augmented_search.py [API_KEY] [SEARCH_ENGINE_ID] [TARGET_PRECISION] [INITIAL_QUERY]
 
 
-## Design
+## Internal Design
 
 The project consists of the following main modules:
 
@@ -89,7 +97,9 @@ Here, close_to_query is True if a query term is encountered in a window parametr
 
 2. **Filtering words_to_search based on ratio of relevant documents**
 
-We get a list of words called words_to_search which are our candidates for being appended to the query. To filter them, we select all words such that the ratio of relevant documents in their inverse list is greater than some parameter k(=0.6 by default).
+ We get a list of words called words_to_search which are our candidates for being appended to the query. To filter them, we select all words such that the ratio of relevant documents in their inverse list is greater than some parameter k(=0.6 by default).
+
+$words\_to\_search = \{word\ |\ \frac{|documents\ \in\ inverse\_list[word]|}{No. of total\ documents} \geq k\}$
 
 3. **Ranking words**
 
@@ -99,9 +109,9 @@ The ranking of words in the QueryAugmenter module involves a calculation of the 
 
 The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. This calculation is expressed as follows:
 
-*gini_gain(word) = gini_impurity(base results) - gini_impurity(results)*
+$gini\_gain(word) = \textit{gini$\_$impurity(base results)} - \textit{gini$\_$impurity(word)} $
 
-Gini coefficient of a set of documents is defined as: 
+where gini of a set of documents is defined as: 
 
 $gini = 1 - \frac{\text{No. of relevant docs}}{\text{No. of total docs}}^2 - \frac{\text{No. of irrelevant docs}}{\text{No. of total docs}}^2$
 
@@ -114,7 +124,7 @@ $gini = 1 - \frac{\text{No. of relevant docs}}{\text{No. of total docs}}^2 - \fr
 #### ii. Adding frequency weights
 For each word, we consider it's frequency in the relevant documents. We then update the rankings using the following formula:
 
-$ranking(word)$ = gini_gain(word) + $tf_{word}$ 
+$ranking(word) = gini\_gain(word) + tf_{word}$ 
 
 where $tf_{word} = log(1+freq_{word})$
 
@@ -128,15 +138,22 @@ We count the following dependency relation for a word:
 
 Let $d_{word}$ be the number of such dependency occurences. Then, the final ranking of a word is given as:
 
-$ranking(word)$ = gini_gain(word) $+ tf_{word} + log(1+d_{word})$
+$ranking(word) = gini\_gain(word) + tf_{word} + log(1+d_{word})$
 
-#### iv. Selecting and ordering terms for the new query
+
+- #### iv. Selecting and ordering terms for the new query
    - Selects new keywords with the highest ranking for query augmentation.
-<!-- 
+
 **Google Custom Search Engine API Key and Engine ID:**
+
+Pranjal Srivastava
 - **API Key:** [Your API Key]
-- **Engine ID:** [Your Engine ID] -->
+- **Engine ID:** [Your Engine ID]
+
+Shreyas Chatterjee
+- **API Key:** [Your API Key]
+- **Engine ID:** [Your Engine ID]
 
 **Additional Information:**
 - Ensure your Google Custom Search Engine is configured to allow the specified API Key and Engine ID.
-- Detailed information on handling non-HTML files is provided in the `query_manager.py` section of the README.
+- Detailed information on handling non-HTML files: we decided to not specifically handle non html files since most of application/pdf type files also contained the 3 things needed by us - link, title and snippet and we wanted to use them too.

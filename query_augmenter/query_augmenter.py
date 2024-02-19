@@ -1,6 +1,7 @@
 import regex as re
 from math import log
 import spacy
+from itertools import permutations
 
 class QueryAugmenter:
     def __init__(self):
@@ -18,7 +19,7 @@ class QueryAugmenter:
         self.k = 0.6 # min ratio of relevant docs for selecting words_to_search
         self.frequency_weight = 1.0
         self.dependency_weight = 1.0
-        self.threshold_for_append = 0.2
+        self.threshold_for_append = 0.4
 
     def augment_query(self, current_query, current_results, current_feedback):
         '''
@@ -48,7 +49,7 @@ class QueryAugmenter:
         )
 
         # Step 4: Choose new words and the new order to append, return the new query
-        return self.get_new_query(rankings, query_terms)
+        return self.get_new_query(rankings, current_results, current_feedback, query_terms)
 
     def extract_words(self, result_list, query_terms):
         """
@@ -275,37 +276,72 @@ class QueryAugmenter:
             )
 
 
-    def get_new_query(self, rankings, current_query_terms):
-        '''
-        Takes rankings and current_query_terms to generate a new query by choosing new 
-        words to append and the ordering of the new query.
-        '''
-        new_query_terms = []
-        for term in current_query_terms:
-            new_query_terms.append((term, rankings[term]))
+    def get_new_query(self, rankings, current_results, current_feedback, current_query_terms):
+        """
+        Takes rankings and current_query_terms to generate a new query by choosing new
+        words to append and the ordering of the new query. Uses n-grams logic for reordering.
+        """
+        # Keep a track of relevant results
+        relevant_results = []
+        for i in range(len(current_results)):
+            if current_feedback[i] == 1:
+                result = current_results[i]
+                final_string = result['Title'] + ' ' + result['Summary']
+                final_words  = [w.strip().lower() for w in re.findall(self.pattern, final_string)]
+                final_string = " ".join(final_words)
+                relevant_results.append(final_string)
 
-        possible_append_terms = [
-            term for term in rankings.keys() if term not in current_query_terms
-        ]
+        # Maintain the initial query terms at the beginning
+        new_query_terms = [(term, rankings[term]) for term in current_query_terms]
+
+        # Find possible terms to append
+        possible_append_terms = [term for term in rankings.keys() if term not in current_query_terms]
         candidates = sorted(possible_append_terms, key=lambda x: -rankings[x])[:2]
 
-        if (
-            rankings[candidates[0]] - rankings[candidates[1]]
-            <= self.threshold_for_append
-        ):
+        # Append terms based on the threshold
+        if rankings[candidates[0]] - rankings[candidates[1]] <= self.threshold_for_append:
             appended_terms = candidates[0], candidates[1]
-            new_query_terms.extend(
-                [
-                    (candidates[0], rankings[candidates[0]]),
-                    (candidates[1], rankings[candidates[1]]),
-                ]
-            )
+            new_query_terms.extend([(candidates[0], rankings[candidates[0]]), (candidates[1], rankings[candidates[1]])])
         else:
             appended_terms = candidates[0]
             new_query_terms.append((candidates[0], rankings[candidates[0]]))
 
-        new_query = [term[0] for term in sorted(new_query_terms, key=lambda x: -x[1])]
-        return " ".join(new_query), appended_terms
+        # Sort and reorder terms using n-grams logic
+        new_query_terms = sorted(new_query_terms, key=lambda x: -x[1])
+        reordered_terms = self.reorder([term[0] for term in new_query_terms], relevant_results)
+
+        return " ".join(reordered_terms), appended_terms
+    
+    def reorder(self, terms, original_relevant_docs):
+        """
+        Reorders terms using n-grams logic based on their existence in original relevant documents.
+        """
+        orders = []
+
+        # Create permutations of orderings
+        n = len(terms)
+        orders.extend(permutations(terms, n))
+
+        # Calculate the score of each order based on its existence in original relevant documents
+        order_scores = {
+            order: sum(self.freq_of_order_in_doc(order, doc) for doc in original_relevant_docs) 
+            for order in orders
+        }
+
+        # Sort order based on their scores
+        sorted_orders = sorted(order_scores.items(), key=lambda x: -x[1])
+        
+        # Reorder terms based on the sorted order
+        reordered_terms = [term for term in sorted_orders[0][0]]
+        
+        return reordered_terms
+
+    def freq_of_order_in_doc(self, order, doc):
+        '''
+        Returns the number of times a particular order has appeared in the doc in that same order of words
+        '''
+        n_gram_pat = re.compile('.*?' + '.*?'.join(order) + '.*?')
+        return len(re.findall(n_gram_pat, doc))
 
 
 if __name__ == "__main__":
