@@ -91,7 +91,7 @@ Here, close_to_query is True if a query term is encountered in a window parametr
 
  We get a list of words called words_to_search which are our candidates for being appended to the query. To filter them, we select all words such that the ratio of relevant documents in their inverse list is greater than some parameter k(=0.6 by default).
 
-$ words\_to\_search = \{word\ |\ \frac{\#documents\  \in\ inverse\_list[word]}{\# total\ documents} \geq k\}$
+$words\_to\_search = \{word\ |\ \frac{|documents\ \in\ inverse\_list[word]|}{No. of total\ documents} \geq k\}$
 
 3. **Ranking words**
 
@@ -105,7 +105,7 @@ $gini\_gain(word) = \textit{gini\_impurity(base results)} - \textit{gini\_impuri
 
 where gini of a set of documents is defined as: 
 
-$gini = 1 - \frac{\text{\# of relevant docs}}{\text{\# total docs}}^2 - \frac{\text{\# of irrelevant docs}}{\text{\# total docs}}^2$
+$gini = 1 - \frac{\text{No. of relevant docs}}{\text{No. of total docs}}^2 - \frac{\text{No. of irrelevant docs}}{\text{No. of total docs}}^2$
 
  Here:
  - `gini_impurity(base results)`: Represents the baseline Gini of the entire result set.
