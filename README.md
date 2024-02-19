@@ -114,25 +114,24 @@ Here, close_to_query is True if a query term is encountered in a window parametr
 
 3. **Ranking words**
 
-We rank the candidate words based on a combination of their gini gain, their frequency in relevant docs, and syntactic dependencies on the query terms. These help us to capture discriminatory value, importance within the relevant documents, and relation with query terms respectively.
+We rank the candidate words based on a combination of their gini gain, their frequency in relevant docs, and syntactic dependencies on the query terms. These help us to capture discriminatory value, importance within the relevant documents, and relation with query terms respectively. The following explains the three and how they are combined:
 
-#### i. Gini Gain Calculation and Initialization
+#### i. Gini Gain Calculation
 
-The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. This calculation is expressed as follows:
+The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. Within our application, gini of a set of documents is defined as: 
 
-*gini_gain(word) = gini_impurity(base results) - gini_impurity(word)*
+$gini = 1 - \left( \frac{\text{No. of relevant docs}}{\text{No. of total docs}}\right)^2 - \left( \frac{\text{No. of irrelevant docs}}{\text{No. of total docs}} \right)^2$
 
-where gini of a set of documents is defined as: 
-
-$gini = 1 - \frac{\text{No. of relevant docs}}{\text{No. of total docs}}^2 - \frac{\text{No. of irrelevant docs}}{\text{No. of total docs}}^2$
-
- Here:
+It is a measure of homogenity of a set. We define gini_impurity of a word as the weighted average of the gini of the two sets: doucments with the word and documents without the word.
  - `gini_impurity(base results)`: Represents the baseline Gini of the entire result set.
  -  `gini_impurity(word)`: Represents the weighted average of gini of the two sets: docs containing the word and docs not containing the word
 
+ We combine this to calculate gini_gain of a wrod as the following:
+*gini_gain(word) = gini_impurity(base results) - gini_impurity(word)*
+
 **Gini gain is a better heuristic than IDF because it allows us to focus on the discriminatory qualities of a word instead of its rarity in the corpus.**
 
-#### ii. Adding frequency weights
+#### ii. Adding term-frequency weights
 For each word, we consider it's frequency in the relevant documents. We then update the rankings using the following formula:
 
 $ranking(word) =$ *gini_gain(word)* $+ tf_{word}$ 
@@ -153,11 +152,9 @@ $ranking(word)$ = *gini_gain(word)* $+ tf_{word} + log(1+d_{word})$
 
 
  #### iv. Selecting and ordering terms for the new query
-   - The original query keywords are kept as it is.
-   - The best new candidate keywords are chosen based on highest ranking for query augmentation.
-   - Either the best or the two best candidates are chosen based on thresholding of the weight difference between the highest two ranked words
-   - Permuations of the final new query words are considered
-   - The best permutation is chosen based on the highest number of times that particular permutation has appeared in the relevant documents (both title and snippet are considered).
+   Based on the rankings, we have *threshold_for_append* parameter in QueryAugmenter. If the difference in rankings of the top 2 candidates is less than this threshold, we append 2 terms to the query, otherwise we only append the top term to all the previous query terms.
+
+   Once we have the new query terms, we decide the best order of query by considering the permutation with **highest subsequence count** in the corpus of the response. For each order, we find the number of subsequences in the corpus that match with the order. The order with highest count is returned as the new order of terms. We use regex to find this, i.e., for a possible query order $(q_1, q_2, \ldots q_k)$, we search occurences of substrings of type: r" $.\*?\ q_1\ .\*?\ q_2 \ldots\ .\*?\ q_k\ .*?$ "
 
 **Google Custom Search Engine API Key and Engine ID:**
 
