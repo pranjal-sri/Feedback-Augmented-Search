@@ -177,7 +177,7 @@ It parses the results to prepare the output_dict. It includes and maps the field
 - Ensure your Google Custom Search Engine is configured to allow the specified API Key and Engine ID.
 - You can control the weightage of frequency term as well as the dependency term for ranking candidates by changing the parameters ```frequency_weight``` and ```dependency_weight```. This lets us alter the importance of frequency and dependencies in rankings. These parameters default to 1.0.
 - If the precision of the results of some query is 0.0, the program exits as it does not have any relevant documents that it can use to get a better query.
-
+- We have additional information about terms being within a window_size distance of query terms in the QueryAugmenter. This can be used to further augment the rankings. However, the default configuration does not use it based on experimentation with different settings.
   
 ## Google Custom Search Engine API Key and Engine ID
 
