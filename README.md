@@ -20,6 +20,9 @@
 8. `README.md`
 9. `requirements.txt`
 10. `stop_words.txt`
+11. `trancript.txt`
+12. PDF version of `README.md`
+13. PDF version of `trancript.txt`
 
 ## Running the Program
 
@@ -27,7 +30,7 @@ To run the project, follow these steps:
 
 1. **Setting Up Environment:**
    - Ensure you have Python installed on your system.
-   - Make sure you run
+   - Make sure you run these two commands to ensure that you have pip installed and all the lates updates are installed
    ```bash
    sudo apt update
    sudo apt install python3-pip
@@ -36,7 +39,7 @@ To run the project, follow these steps:
    Run the following command in your working directory.
     ```bash
     pip3 install -r requirements.txt
-    python -m spacy download en_core_web_md
+    python3 -m spacy download en_core_web_md
 
 3. **Running the main python file:**
     ```bash
@@ -70,6 +73,14 @@ The project consists of the following main modules:
 - Implements the core query modification method.
 - Extracts relevant information from search results.
 - Selects new keywords based on various criteria.
+
+#### External Libraries
+
+- numpy: for calculating the mean and getting the precision@10 scores when feedback is received.
+- regex: for cleaning the titles and snippets from documents and getting a list of words present in them. also used for calculating the number of times a particular order is found in a document.
+- math.log: to enhance the weights by a factor of log(1+x) while ranking the words.
+- spacy: to implement dependency parsing
+- itertools.permutations: to check all the possible orderings of the words
 
 
 ## Query Augmentation Method
@@ -142,7 +153,11 @@ $ranking(word) = gini\_gain(word) + tf_{word} + log(1+d_{word})$
 
 
 - #### iv. Selecting and ordering terms for the new query
-   - Selects new keywords with the highest ranking for query augmentation.
+   - The original query keywords are kept as it is.
+   - The best new candidate keywords are chosen based on highest ranking for query augmentation.
+   - Either the best or the two best candidates are chosen based on thresholding of the weight difference between the highest two ranked words
+   - Permuations of the final new query words are considered
+   - The best permutation is chosen based on the highest number of times that particular permutation has appeared in the relevant documents (both title and snippet are considered).
 
 **Google Custom Search Engine API Key and Engine ID:**
 
@@ -151,9 +166,14 @@ Pranjal Srivastava
 - **Engine ID:** [Your Engine ID]
 
 Shreyas Chatterjee
-- **API Key:** [Your API Key]
-- **Engine ID:** [Your Engine ID]
+- **API Key:** AIzaSyBdyvstyytiLSY0jPXM1FV9JfGmDaoZ3iY
+- **Engine ID:** 91edb5a90f6c44a6a
 
 **Additional Information:**
 - Ensure your Google Custom Search Engine is configured to allow the specified API Key and Engine ID.
 - Detailed information on handling non-HTML files: we decided to not specifically handle non html files since most of application/pdf type files also contained the 3 things needed by us - link, title and snippet and we wanted to use them too.
+
+**References:**
+- Project Idea : https://www.cs.columbia.edu/~gravano/cs6111/proj1.html
+- Gini Coefficient : https://en.wikipedia.org/wiki/Gini_coefficient
+- Spacy - https://realpython.com/natural-language-processing-spacy-python/
