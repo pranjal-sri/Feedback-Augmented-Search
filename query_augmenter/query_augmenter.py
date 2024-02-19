@@ -19,7 +19,7 @@ class QueryAugmenter:
         self.k = 0.6 # min ratio of relevant docs for selecting words_to_search
         self.frequency_weight = 1.0
         self.dependency_weight = 1.0
-        self.threshold_for_append = 0.5
+        self.threshold_for_append = 0.2
 
     def augment_query(self, current_query, current_results, current_feedback):
         '''
@@ -283,38 +283,39 @@ class QueryAugmenter:
         """
         # Keep a track of relevant results
         relevant_results = []
+        # We need the combined string of relevant documents
         for i in range(len(current_results)):
             if current_feedback[i] == 1:
                 result = current_results[i]
-                final_string = result['Title'] + ' ' + result['Summary']
+                final_string = result['Title'] + '' + result['Summary']
                 final_words  = [w.strip().lower() for w in re.findall(self.pattern, final_string)]
                 final_string = " ".join(final_words)
                 relevant_results.append(final_string)
 
-        # Maintain the initial query terms at the beginning
-        new_query_terms = [(term, rankings[term]) for term in current_query_terms]
+        # Initial query terms have to be included in the new query
+        new_query_terms = [term for term in current_query_terms]
 
-        # Find possible terms to append
+        # Only terms other than query terms are ranked as candidates
         possible_append_terms = [term for term in rankings.keys() if term not in current_query_terms]
         candidates = sorted(possible_append_terms, key=lambda x: -rankings[x])[:2]
 
-        # Append terms based on the threshold
+        # If the difference in rankings of the top 2 candidates is more than threshold_for_append,
+        # then only include the top candidate, else include both the candidates
         if rankings[candidates[0]] - rankings[candidates[1]] <= self.threshold_for_append:
             appended_terms = candidates[0], candidates[1]
-            new_query_terms.extend([(candidates[0], rankings[candidates[0]]), (candidates[1], rankings[candidates[1]])])
+            new_query_terms.extend([candidates[0], candidates[1]])
         else:
             appended_terms = candidates[0]
-            new_query_terms.append((candidates[0], rankings[candidates[0]]))
+            new_query_terms.append(candidates[0])
 
-        # Sort and reorder terms using n-grams logic
-        new_query_terms = sorted(new_query_terms, key=lambda x: -x[1])
-        reordered_terms = self.reorder([term[0] for term in new_query_terms], relevant_results)
+        # Reorder the new query terms using the order with the highest subsequence count
+        reordered_terms = self.reorder(new_query_terms, relevant_results)
 
         return " ".join(reordered_terms), appended_terms
     
     def reorder(self, terms, original_relevant_docs):
         """
-        Reorders terms using n-grams logic based on their existence in original relevant documents.
+        Reorders terms based on their subsequence count in original relevant documents.
         """
         orders = []
 
@@ -322,26 +323,26 @@ class QueryAugmenter:
         n = len(terms)
         orders.extend(permutations(terms, n))
 
-        # Calculate the score of each order based on its existence in original relevant documents
+        # Calculate the score of each order based on the number of occurences of the order subsequence in the corpus
         order_scores = {
-            order: sum(self.freq_of_order_in_doc(order, doc) for doc in original_relevant_docs) 
+            order: sum(self.subsequence_count_of_order(order, doc) for doc in original_relevant_docs) 
             for order in orders
         }
 
-        # Sort order based on their scores
-        sorted_orders = sorted(order_scores.items(), key=lambda x: -x[1])
+        # Sort orders based on their subsequence count scores
+        sorted_orders = sorted(order_scores.keys(), key=lambda x: -order_scores[x])
         
-        # Reorder terms based on the sorted order
-        reordered_terms = [term for term in sorted_orders[0][0]]
+        # Reorder terms based on the order with highest subsequence count
+        reordered_terms = [term for term in sorted_orders[0]]
         
         return reordered_terms
 
-    def freq_of_order_in_doc(self, order, doc):
+    def subsequence_count_of_order(self, order, doc):
         '''
         Returns the number of times a particular order has appeared in the doc in that same order of words
         '''
-        n_gram_pat = re.compile('.*?' + '.*?'.join(order) + '.*?')
-        return len(re.findall(n_gram_pat, doc))
+        subsequence_pat = re.compile('.*?' + '.*?'.join(order) + '.*?')
+        return len(re.findall(subsequence_pat, doc))
 
 
 if __name__ == "__main__":
