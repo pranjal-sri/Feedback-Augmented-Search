@@ -279,7 +279,7 @@ class QueryAugmenter:
     def get_new_query(self, rankings, current_results, current_feedback, current_query_terms):
         """
         Takes rankings and current_query_terms to generate a new query by choosing new
-        words to append and the ordering of the new query. Uses n-grams logic for reordering.
+        words to append and the ordering of the new query. Uses subsequence counts for reordering.
         """
         # Keep a track of relevant results
         relevant_results = []
