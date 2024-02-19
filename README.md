@@ -121,7 +121,7 @@ We rank the candidate words based on a combination of their gini gain, their fre
   
   $gini = 1 - \left( \frac{\text{No. of relevant docs}}{\text{No. of total docs}}\right)^2 - \left( \frac{\text{No. of irrelevant docs}}{\text{No. of total docs}} \right)^2$
   
-  It is a measure of homogenity of a set. We define gini_impurity of a word as the weighted average of the gini of the two sets: doucments with the word and documents without the word.
+  It is a measure of homogenity of a set. We define gini_impurity of a word as the weighted average of the gini of the two sets: documents with the word and documents without the word.
    - `gini_impurity(base results)`: Represents the baseline Gini of the entire result set.
    -  `gini_impurity(word)`: Represents the weighted average of gini of the two sets: docs containing the word and docs not containing the word
   
@@ -160,7 +160,20 @@ We rank the candidate words based on a combination of their gini gain, their fre
 
 ## QueryManager: Methodology
 
-QueryManager 
+QueryManager is responsible for interacting with the google programmable search API. It queries the API with a specific query, and returns an output dictionary. It is parametrised by the ```API_key, search_engine_id, number_of_results and feature_mapping```. ```number_of_results``` is the number of top results it returns. ```feature_mapping``` allows us to specify which fields of the API response it should include and what keys should it map them to in the output_dict.
+
+It performs a three-step process:
+#### 1. Querying the API
+It queries the API with the given paramters. It raises an error in case of Connection errors.
+
+#### 2. Verifying the result
+It verifies the results to ensure it has the item field and has atleast 10 search results. In either is violated, the program prints the issue and exits.
+
+#### 3. Parsing the result
+It parses the results to prepare the output_dict. It includes and maps the fields as specified by feature_mapping. 
+**For non-HTML documents, we include them as long as they have a title, link and snippet field. Documents without these fields are excluded**
+
+
 **Google Custom Search Engine API Key and Engine ID:**
 
 Pranjal Srivastava
