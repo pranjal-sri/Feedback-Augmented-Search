@@ -1,2 +1,4 @@
 .DS_Store
 _MACOSX
+.python-version
+__pycache__

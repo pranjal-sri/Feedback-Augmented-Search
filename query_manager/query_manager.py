@@ -1,6 +1,4 @@
 import requests
-import json
-
 class QueryManager:
 
     # initializing object constructor with required parameters

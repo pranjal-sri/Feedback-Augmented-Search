@@ -2,8 +2,6 @@ import regex as re
 from math import log
 import spacy
 
-spacy.cli.download("en_core_web_md")
-
 class QueryAugmenter:
     def __init__(self):
         self.pattern = re.compile(r"’s|’t|’re|’ve|’m|’ll|’d| ?\w+")
@@ -12,7 +10,7 @@ class QueryAugmenter:
 
         self.stop_words = set()
         with open(
-            "/content/feedback_search/query_augmenter/stop_words.txt", "r"
+            "./stop_words.txt", "r"
         ) as stop_words_file:
             for line in stop_words_file:
                 self.stop_words.add(line.strip())
@@ -20,7 +18,7 @@ class QueryAugmenter:
         self.k = 0.6
         self.frequency_weight = 1.0
         self.dependency_weight = 1.0
-        self.threshold_for_append = 0.5
+        self.threshold_for_append = 0.2
 
     def extract_words(self, result_list, query_terms):
         """

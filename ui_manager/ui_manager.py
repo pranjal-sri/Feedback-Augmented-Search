@@ -1,6 +1,4 @@
-import requests
 from typing import List
-import json
 
 class UIManager:
     # constructor
@@ -11,7 +9,7 @@ class UIManager:
 
     # called when initially the query is passed to search API
     def display_initial(self, current_query):
-        print(f"\nParameters:")
+        print("\nParameters:")
         print(f"Client key  = {self.API_KEY}")
         print(f"Engine key  = {self.engine_id}")
         print(f"Query       = {current_query}")
@@ -51,7 +49,7 @@ class UIManager:
         # here update will be None only on the final call of this function
         # i.e., when the current_precision >= self.target_precision meaning program was successfu
         # or when current_precision == 0.0 meaning no relevant document was found
-        if update == None:
+        if update is None:
             if current_precision >= self.target_precision:
                 print("Desired precision reached, done.")
             else:
