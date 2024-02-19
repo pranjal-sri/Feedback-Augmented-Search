@@ -62,20 +62,4 @@ class UIManager:
             print(f"Augmenting by {update}")
 
 if __name__ == '__main__':
-    from dotenv import load_dotenv
-    import os
-    load_dotenv()
-    
-    api_key = os.environ.get('GOOGLE_API_KEY')
-    engine_id = os.environ.get('SEARCH_ENGINE_ID')
-
-    # ui = UIManager(api_key, engine_id, 1)
-
-    # results = []
-    # with open('text_saving/cases.json') as user_file:
-    #     for line in user_file:
-    #         results.append(json.loads(line))
-
-    # feedback = ui.display_and_input_feedback(results)
-
-    # print(feedback)
+    pass

@@ -19,7 +19,7 @@ class QueryAugmenter:
         self.k = 0.6 # min ratio of relevant docs for selecting words_to_search
         self.frequency_weight = 1.0
         self.dependency_weight = 1.0
-        self.threshold_for_append = 0.4
+        self.threshold_for_append = 0.5
 
     def augment_query(self, current_query, current_results, current_feedback):
         '''
