@@ -87,7 +87,7 @@ The project consists of the following main modules:
 
 The QueryAugmenter module implements the logic for expanding queries based on user feedback. It uses a four step process to select words to augment to the query. It 1) constructs inverse lists for words 2) filter candidates for appending 3)Ranks candidates 4) Selects words to append and orders them to genrate a new query. These steps are explained below in detail.
 
-1. **Construction of inverse-lists**
+#### 1. Construction of inverse-lists
 -  the `construct_inverse_list` method builds inverse lists for each word encountered in the search results. The inverse list is a list of all the documents the word is present in, formatted as follows:
 
 ```python
@@ -106,55 +106,57 @@ The QueryAugmenter module implements the logic for expanding queries based on us
 ```
 Here, close_to_query is True if a query term is encountered in a window parametrised by window_size in QueryAugmenter. the default window_size is 2.
 
-2. **Filtering words_to_search based on ratio of relevant documents**
+#### 2. Filtering words_to_search based on ratio of relevant documents
 
   From our vocab of all words, we filter candidate words to append to the query. To select candidates, we consider all the words which have more than k ratio of relevant documents in their inverse lists.
 
 *words_to_search* = $`\{word\ |\ \frac{No.\ of\ relevant\ documents\ \in\ inverse-list[word]}{No.\ of\ documents \in\ inverse-list[word]} \geq k\}`$
 
-3. **Ranking words**
-
+#### 3. Ranking words
 We rank the candidate words based on a combination of their gini gain, their frequency in relevant docs, and syntactic dependencies on the query terms. These help us to capture discriminatory value, importance within the relevant documents, and relation with query terms respectively. The following explains the three and how they are combined:
 
-#### i. Gini Gain Calculation
+  **i. Gini Gain Calculation**
 
-The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. Within our application, gini of a set of documents is defined as: 
+  The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. Within our application, gini of a set of documents is defined as: 
+  
+  $gini = 1 - \left( \frac{\text{No. of relevant docs}}{\text{No. of total docs}}\right)^2 - \left( \frac{\text{No. of irrelevant docs}}{\text{No. of total docs}} \right)^2$
+  
+  It is a measure of homogenity of a set. We define gini_impurity of a word as the weighted average of the gini of the two sets: doucments with the word and documents without the word.
+   - `gini_impurity(base results)`: Represents the baseline Gini of the entire result set.
+   -  `gini_impurity(word)`: Represents the weighted average of gini of the two sets: docs containing the word and docs not containing the word
+  
+   We combine this to calculate gini_gain of a wrod as the following:
+  *gini_gain(word) = gini_impurity(base results) - gini_impurity(word)*
+  
+  **Gini gain is a better heuristic than IDF because it allows us to focus on the discriminatory qualities of a word instead of its rarity in the corpus.**
 
-$gini = 1 - \left( \frac{\text{No. of relevant docs}}{\text{No. of total docs}}\right)^2 - \left( \frac{\text{No. of irrelevant docs}}{\text{No. of total docs}} \right)^2$
+  **ii. Adding term-frequency weights**
+  
+  For each word, we consider it's frequency in the relevant documents. We then update the rankings using the following formula:
+  
+  $ranking(word) =$ *gini_gain(word)* $+ tf_{word}$ 
+  
+  where $tf_{word} = log(1+freq_{word})$
 
-It is a measure of homogenity of a set. We define gini_impurity of a word as the weighted average of the gini of the two sets: doucments with the word and documents without the word.
- - `gini_impurity(base results)`: Represents the baseline Gini of the entire result set.
- -  `gini_impurity(word)`: Represents the weighted average of gini of the two sets: docs containing the word and docs not containing the word
-
- We combine this to calculate gini_gain of a wrod as the following:
-*gini_gain(word) = gini_impurity(base results) - gini_impurity(word)*
-
-**Gini gain is a better heuristic than IDF because it allows us to focus on the discriminatory qualities of a word instead of its rarity in the corpus.**
-
-#### ii. Adding term-frequency weights
-For each word, we consider it's frequency in the relevant documents. We then update the rankings using the following formula:
-
-$ranking(word) =$ *gini_gain(word)* $+ tf_{word}$ 
-
-where $tf_{word} = log(1+freq_{word})$
-
-#### iii. Adding dependency weights
-Finally, we update the rankings using the dependencies amongst the words. We use Spacy dependency parser. For each token, we get children and head that mark the direction of dependencies between words.
-
-We count the following dependency relation for a word:
-    
-- Number of times it appears as a child of a query term
-- Number of times it appears a child of some ROOT term along with other query terms.
-
-Let $d_{word}$ be the number of such dependency occurences. Then, the final ranking of a word is given as:
-
-$ranking(word)$ = *gini_gain(word)* $+ tf_{word} + log(1+d_{word})$
+  **iii. Adding dependency weights**
+  
+  Finally, we update the rankings using the dependencies amongst the words. We use Spacy dependency parser. For each token, we get children and head that mark the direction of dependencies between words.
+  
+  We count the following dependency relation for a word:
+      
+  - Number of times it appears as a child of a query term
+  - Number of times it appears a child of some ROOT term along with other query terms.
+  
+  Let $d_{word}$ be the number of such dependency occurences. Then, the final ranking of a word is given as:
+  
+  $ranking(word)$ = *gini_gain(word)* $+ tf_{word} + log(1+d_{word})$
 
 
- #### iv. Selecting and ordering terms for the new query
-   Based on the rankings, we have *threshold_for_append* parameter in QueryAugmenter. If the difference in rankings of the top 2 candidates is less than this threshold, we append 2 terms to the query, otherwise we only append the top term to all the previous query terms.
+**iv. Selecting and ordering terms for the new query**
 
-   Once we have the new query terms, we decide the best order of query by considering the permutation with **highest subsequence count** in the corpus of the response. For each order, we find the number of subsequences in the corpus that match with the order. The order with highest count is returned as the new order of terms. We use regex to find this, i.e., for a possible query order $(q_1, q_2, \ldots q_k)$, we search occurences of substrings of type: r" $.\*?\ q_1\ .\*?\ q_2 \ldots\ .\*?\ q_k\ .*?$ "
+  Based on the rankings, we have *threshold_for_append* parameter in QueryAugmenter. If the difference in rankings of the top 2 candidates is less than this threshold, we append 2 terms to the query, otherwise we only append the top term to all the previous query terms.
+  
+  Once we have the new query terms, we decide the best order of query by considering the permutation with **highest subsequence count** in the corpus of the response. For each order, we find the number of subsequences in the corpus that match with the order. The order with highest count is returned as the new order of terms. We use regex to find this, i.e., for a possible query order $(q_1, q_2, \ldots q_k)$, we search occurences of substrings of type: r" $.\*?\ q_1\ .\*?\ q_2 \ldots\ .\*?\ q_k\ .*?$ "
 
 **Google Custom Search Engine API Key and Engine ID:**
 
