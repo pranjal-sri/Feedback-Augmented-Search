@@ -46,7 +46,7 @@ class UIManager:
             if current_precision >= self.target_precision:
                 print("Desired precision reached, done.")
             else:
-                print("No update possible, desired result cannot be found.")
+                print("Below desired precision, but can no longer augment the query")
         else:
             print(f"Still below the desired precision of {self.target_precision}")
             print("Indexing results ....")

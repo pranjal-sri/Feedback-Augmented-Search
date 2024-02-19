@@ -1,11 +1,15 @@
 import regex as re
 from math import log
+import spacy
 
 class QueryAugmenter:
     def __init__(self):
         self.pattern = re.compile(r'''
             ’s|’t|’re|’ve|’m|’ll|’d| ?\p{L}+| ?\p{N}+”
             ''')
+
+        self.nlp = spacy.load("en_core_web_md")
+
         self.stop_words = set()
         with open('stop_words.txt', 'r') as stop_words_file:
             for line in stop_words_file:
@@ -14,6 +18,7 @@ class QueryAugmenter:
         self.k = 0.6
         self.frequency_weight = 1.0
         self.proximity_weight = 1.0
+        self.dependency_weight = 2.0
     
     def extract_words(self, result_list, query_terms):
         documents = []
@@ -118,10 +123,37 @@ class QueryAugmenter:
             relevant_word_docs = word_docs.intersection(relevant_docs)
             total_relevant_freq = 0
             for doc in relevant_word_docs:
-                total_relevant_freq += inverse_list[word][doc]['frequency']
+                total_relevant_freq += 1
             
 
-            rankings[word]+= log(1.0 + total_relevant_freq)
+            rankings[word]+= self.frequency_weight*log(1.0 + total_relevant_freq)
+    
+    def has_query_terms(self, term_list, query_terms):
+      for term in term_list:
+          if term.text.lower().strip() in query_terms:
+            return True
+      return False
+    
+    def weigh_ranking_by_dependency(self, rankings, results, feedback, query_terms):
+        relevant_results = [results[i] for i in range(len(feedback)) if feedback[i] == 1]
+        freq_of_dependency = {i:0 for i in rankings.keys()}
+
+        for result in relevant_results:
+          doc = self.nlp(result['Summary'])
+          for token in doc:
+            if token.text.lower().strip() in query_terms:
+              for word in token.children:
+                if not word.text.lower().strip() in rankings:
+                  continue
+                freq_of_dependency[word.text.lower().strip()] += 1.0
+            if token.dep_ == 'ROOT' and self.has_query_terms(token.children, query_terms):
+              for word in token.children:
+                if not word.text.lower().strip() in rankings:
+                  continue
+                freq_of_dependency[word.text.lower().strip()] += 1.1
+        
+        for word in rankings.keys():
+          rankings[word] += self.dependency_weight*log(1.0+freq_of_dependency[word])
 
     def weigh_ranking_by_proximity(self, rankings, inverse_list, feedback):
         relevant_docs = set([i for i in range(len(feedback)) if feedback[i] == 1])
@@ -133,7 +165,7 @@ class QueryAugmenter:
                 if inverse_list[word][doc]['close_to_query']:
                     total_close_to_query_occurences+=1
             
-            rankings[word] += log(1.0+total_close_to_query_occurences)
+            rankings[word] += self.proximity_weight*log(1.0+total_close_to_query_occurences)
 
     def augment_query(self, current_query, current_results, current_feedback):
         # import pdb; pdb.set_trace()
@@ -152,6 +184,7 @@ class QueryAugmenter:
         rankings = self.get_gini_rankings(words_to_search, inverse_list, current_feedback)
         self.weigh_ranking_by_frequency(rankings, inverse_list, current_feedback)
         self.weigh_ranking_by_proximity(rankings, inverse_list, current_feedback)
+        self.weigh_ranking_by_dependency(rankings, current_results, current_feedback, query_terms)
         # for word in words_to_search:
         #     gini = self.gini_impurity(inverse_list[word], all_documents - inverse_list[word], feedback = {k+1:f for k, f in enumerate(current_feedback)})
         #     w1 = len(inverse_list[word])/len(all_documents)

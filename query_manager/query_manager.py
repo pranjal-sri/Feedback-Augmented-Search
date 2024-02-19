@@ -65,6 +65,7 @@ class QueryManager:
             items.append(item)
         
         return items
+    
     # TODO: Implement download pages
     def download_pages(self, items):
         pass
