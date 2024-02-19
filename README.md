@@ -130,8 +130,7 @@ Let $d_{word}$ be the number of such dependency occurences. Then, the final rank
 
 $ranking(word)$ = gini_gain(word) $+ tf_{word} + log(1+d_{word})$
 
-
-- #### iv. Selecting and ordering terms for the new query
+#### iv. Selecting and ordering terms for the new query
    - Selects new keywords with the highest ranking for query augmentation.
 <!-- 
 **Google Custom Search Engine API Key and Engine ID:**
