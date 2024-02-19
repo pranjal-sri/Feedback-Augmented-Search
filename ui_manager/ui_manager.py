@@ -51,9 +51,9 @@ class UIManager:
         # or when current_precision == 0.0 meaning no relevant document was found
         if update is None:
             if current_precision >= self.target_precision:
-                print("Desired precision reached, done.")
+                print("Desired precision reached, done.\n")
             else:
-                print("Below desired precision, but can no longer augment the query")
+                print("Below desired precision, but can no longer augment the query\n")
         else:
             # when update is not None, it means that there must be a necessary update to the query
             print(f"Still below the desired precision of {self.target_precision}")
