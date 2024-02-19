@@ -3,11 +3,13 @@ from typing import List
 import json
 
 class UIManager:
+    # constructor
     def __init__(self, API_KEY, engine_id, target_precision):
         self.API_KEY = API_KEY
         self.engine_id = engine_id
         self.target_precision = target_precision
 
+    # called when initially the query is passed to search API
     def display_initial(self, current_query):
         print(f"\nParameters:")
         print(f"Client key  = {self.API_KEY}")
@@ -15,6 +17,7 @@ class UIManager:
         print(f"Query       = {current_query}")
         print(f"Precision   = {self.target_precision}")
     
+    # called when we have to display the results and take feedback from the user
     def display_and_input_feedback(self, results_dictionary) -> List[int]:
         print("\nGoogle Search Results:")
         print("======================")
@@ -28,7 +31,9 @@ class UIManager:
             print(f"Summary: {result['Summary']}")
             print("]\n")
 
+            # we check for lower case input as well, i.e., y/n are also valid inputs
             feedback = input("Relevant (Y/N)?").strip().upper()
+            # we keep asking for feedback until user enters a valid feedback
             while feedback not in ['Y', 'N']:
                 print("Invalid input. Please enter 'Y' or 'N'.")
                 feedback = input("Relevant (Y/N)?").strip().upper()
@@ -37,17 +42,22 @@ class UIManager:
 
         return user_feedback
 
+    # called when we have to display the results of the search
     def display_feedback_summary(self, current_query, current_precision, update):
         print("\n======================")
         print("FEEDBACK SUMMARY")
         print(f"Query {current_query}")
         print(f"Precision {current_precision}")
+        # here update will be None only on the final call of this function
+        # i.e., when the current_precision >= self.target_precision meaning program was successfu
+        # or when current_precision == 0.0 meaning no relevant document was found
         if update == None:
             if current_precision >= self.target_precision:
                 print("Desired precision reached, done.")
             else:
                 print("Below desired precision, but can no longer augment the query")
         else:
+            # when update is not None, it means that there must be a necessary update to the query
             print(f"Still below the desired precision of {self.target_precision}")
             print("Indexing results ....")
             print("Indexing results ....")
