@@ -2,6 +2,7 @@ import regex as re
 from math import log
 import spacy
 
+spacy.cli.download("en_core_web_md")
 
 class QueryAugmenter:
     def __init__(self):
