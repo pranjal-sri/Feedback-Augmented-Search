@@ -101,7 +101,7 @@ The ranking of words in the QueryAugmenter module involves a calculation of the 
 
 The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. This calculation is expressed as follows:
 
-$gini\_gain(word) = \textit{gini\_impurity(base results)} - \textit{gini\_impurity(word)} $
+$gini\_gain(word) = \textit{gini$\_$impurity(base results)} - \textit{gini$\_$impurity(word)} $
 
 where gini of a set of documents is defined as: 
 
@@ -114,7 +114,7 @@ $gini = 1 - \frac{\text{No. of relevant docs}}{\text{No. of total docs}}^2 - \fr
 **Gini gain is a better heuristic than IDF because it allows us to focus on the discriminatory qualities of a word instead of its rarity in the corpus.**
 
 #### ii. Adding frequency weights
-For each word, we cosnider it's frequency in the relevant documents. We then update the rankings using the following formula:
+For each word, we consider it's frequency in the relevant documents. We then update the rankings using the following formula:
 
 $ranking(word) = gini\_gain(word) + tf_{word}$ 
 
