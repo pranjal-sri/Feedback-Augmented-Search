@@ -164,7 +164,7 @@ QueryManager is responsible for interacting with the google programmable search 
 
 It performs a three-step process:
 #### 1. Querying the API
-It queries the API with the given paramters. It raises an error in case of Connection errors.
+It queries the API with the given paramters. In case of Connection errors, it prints a Query Error, and exits.
 
 #### 2. Verifying the result
 It verifies the results to ensure it has the item field and has atleast 10 search results. In either is violated, the program prints the issue and exits.
