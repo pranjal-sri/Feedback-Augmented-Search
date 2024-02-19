@@ -1,4 +1,6 @@
 import requests
+import sys
+
 class QueryManager:
 
     # initializing object constructor with required parameters
@@ -37,19 +39,21 @@ class QueryManager:
         except requests.exceptions.JSONDecodeError:
             print("QUERY ERROR: JSON response can't be parsed")
             raise
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             print("QUERY ERROR: Connection error")
             raise
 
     def __verify_results(self, search_results: dict):
 
         # if search results does not contain the items keyword
-        if not 'items' in search_results:
-            raise ValueError("QUERY ERROR: API result does not have items")
+        if 'items' not in search_results:
+            print("QUERY ERROR: API result does not have items")
+            sys.exit()
         
         # if search results does not contain even 10 results irrespective of type i.e., text/html/application/pdf/etc.
         if len(search_results['items']) < self.number_of_results:
-            raise ValueError("QUERY ERROR: Too few results")
+           print("QUERY ERROR: API returned less than 10 results") 
+           sys.exit()
 
     def __parse_results(self, search_results):
         # taking the first 10 results only
