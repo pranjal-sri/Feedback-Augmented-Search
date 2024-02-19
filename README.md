@@ -30,7 +30,7 @@ To run the project, follow these steps:
 
 1. **Setting Up Environment:**
    - Ensure you have Python installed on your system.
-   - Make sure you run these two commands to ensure that you have pip installed and all the lates updates are installed
+   - Make sure you run these two commands to ensure that you have pip installed and all the latest updates are installed
    ```bash
    sudo apt update
    sudo apt install python3-pip
@@ -52,7 +52,7 @@ The project consists of the following main modules:
 
 #### `feedback_augmented_search.py`
 
-- Orchestrates project execution.
+- Entry point to the program
 - Initiates QueryManager, UIManager, and QueryAugmenter instances.
 - Manages the query feedback loop until the desired precision is reached.
 
@@ -83,9 +83,9 @@ The project consists of the following main modules:
 - itertools.permutations: to check all the possible orderings of the words
 
 
-## Query Augmentation Method
+## Query Augmentation
 
-The QueryAugmenter module uses a four step process to select words to augment to the query. These are explained below in detail.
+The QueryAugmenter module implements the logic for expanding queries based on user feedback. It uses a four step process to select words to augment to the query. It 1) constructs inverse lists for words 2) filter candidates for appending 3)Ranks candidates 4) Selects words to append and orders them to genrate a new query. These steps are explained below in detail.
 
 1. **Construction of inverse-lists**
 -  the `construct_inverse_list` method builds inverse lists for each word encountered in the search results. The inverse list is a list of all the documents the word is present in, formatted as follows:
@@ -108,19 +108,19 @@ Here, close_to_query is True if a query term is encountered in a window parametr
 
 2. **Filtering words_to_search based on ratio of relevant documents**
 
- We get a list of words called words_to_search which are our candidates for being appended to the query. To filter them, we select all words such that the ratio of relevant documents in their inverse list is greater than some parameter k(=0.6 by default).
+  From our vocab of all words, we filter candidate words to append to the query. To select candidates, we consider all the words which have more than k ratio of relevant documents in their inverse lists.
 
-$words\_to\_search = \{word\ |\ \frac{|documents\ \in\ inverse\_list[word]|}{No. of total\ documents} \geq k\}$
+*words_to_search* = $`\{word\ |\ \frac{No.\ of\ relevant\ documents\ \in\ inverse-list[word]}{No.\ of\ documents \in\ inverse-list[word]} \geq k\}`$
 
 3. **Ranking words**
 
-The ranking of words in the QueryAugmenter module involves a calculation of the Gini gain for each word, which serves as the basis for initializing rankings.
+We rank the candidate words based on a combination of their gini gain, their frequency in relevant docs, and syntactic dependencies on the query terms. These help us to capture discriminatory value, importance within the relevant documents, and relation with query terms respectively.
 
 #### i. Gini Gain Calculation and Initialization
 
 The Gini gain of a word is computed using the Gini impurity metric, which quantifies the effectiveness of the word in differentiating between relevant and non-relevant documents. This calculation is expressed as follows:
 
-$gini\_gain(word) = \textit{gini$\_$impurity(base results)} - \textit{gini$\_$impurity(word)} $
+*gini_gain(word) = gini_impurity(base results) - gini_impurity(word)*
 
 where gini of a set of documents is defined as: 
 
@@ -128,14 +128,14 @@ $gini = 1 - \frac{\text{No. of relevant docs}}{\text{No. of total docs}}^2 - \fr
 
  Here:
  - `gini_impurity(base results)`: Represents the baseline Gini of the entire result set.
- -  `gini_impurity(word)`: Reflects the weighted average of gini of the two sets: docs containing the word and docs not containing the word
+ -  `gini_impurity(word)`: Represents the weighted average of gini of the two sets: docs containing the word and docs not containing the word
 
 **Gini gain is a better heuristic than IDF because it allows us to focus on the discriminatory qualities of a word instead of its rarity in the corpus.**
 
 #### ii. Adding frequency weights
 For each word, we consider it's frequency in the relevant documents. We then update the rankings using the following formula:
 
-$ranking(word) = gini\_gain(word) + tf_{word}$ 
+$ranking(word) =$ *gini_gain(word)* $+ tf_{word}$ 
 
 where $tf_{word} = log(1+freq_{word})$
 
@@ -149,10 +149,10 @@ We count the following dependency relation for a word:
 
 Let $d_{word}$ be the number of such dependency occurences. Then, the final ranking of a word is given as:
 
-$ranking(word) = gini\_gain(word) + tf_{word} + log(1+d_{word})$
+$ranking(word)$ = *gini_gain(word)* $+ tf_{word} + log(1+d_{word})$
 
 
-- #### iv. Selecting and ordering terms for the new query
+ #### iv. Selecting and ordering terms for the new query
    - The original query keywords are kept as it is.
    - The best new candidate keywords are chosen based on highest ranking for query augmentation.
    - Either the best or the two best candidates are chosen based on thresholding of the weight difference between the highest two ranked words
