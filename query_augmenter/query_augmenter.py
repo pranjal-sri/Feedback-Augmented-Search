@@ -26,7 +26,7 @@ class QueryAugmenter:
         augments a query based on feedback and the results.
         '''
         # terms in the query
-        query_terms = current_query.strip().split()
+        query_terms = [w.lower().strip() for w in re.findall(self.pattern, current_query)]
 
         # filtered words and the vocab in the results
         documents, vocab = self.extract_words(current_results, query_terms)
@@ -47,7 +47,6 @@ class QueryAugmenter:
         self.weigh_ranking_by_dependency(
             rankings, current_results, current_feedback, query_terms
         )
-
         # Step 4: Choose new words and the new order to append, return the new query
         return self.get_new_query(rankings, current_results, current_feedback, query_terms)
 
@@ -102,7 +101,9 @@ class QueryAugmenter:
         """
         # Intialise empty word_dicts for each word
         inverse_list = {word: {} for word in vocab}
-
+        for query_term in query_terms:
+            if query_term not in vocab:
+                inverse_list[query_term] = {}
         for doc_i, document in enumerate(documents):
             # All the words in a document
             # We append '\' as an extra character separating title and summary
@@ -143,8 +144,6 @@ class QueryAugmenter:
         """
         Return gini gain of a word based on documents it is present in and not present in.
         """
-        docs_with_word = list(inverse_list[word])
-
         all_documents = set(range(0, len(feedback)))
         relevant_docs = set([i for i in range(len(feedback)) if feedback[i] == 1])
 
